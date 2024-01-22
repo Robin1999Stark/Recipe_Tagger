@@ -1,7 +1,9 @@
+from ..objects.receipe import Receipe
+
 class LabelExtractorInterface:
-    def __init__(self, title, origin, descr, wiki_descr):
-        pass
+    def __init__(self, receipe: Receipe):
+        self.receipe = receipe
     
-    def run(self) -> str:
+    def run(self) -> Receipe:
         """Run"""
         pass
