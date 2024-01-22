@@ -6,3 +6,8 @@ NLP Project for Auto Labeling Receipes
 ### [] Origin Extractor
 ### [] Label Finalizer
 ### [] Wikipedia API Call
+
+## Run
+    >> navigate to `project` folder
+    >> run `pipenv install` to install dependencies
+    >> run `pipenv run python main.py`
