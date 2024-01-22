@@ -1,7 +1,7 @@
 import spacy
 from spacy.language import Language
 from objects.receipe import Receipe
-from modules.label_extractor import LabelExtractor
+from modules.origin_extractor import OriginExtractor
 import nltk
 
 
@@ -15,8 +15,8 @@ def run_pipeline(receipe: Receipe, nlp: Language) -> Receipe:
     # TODD: Translate to english
 
     # TODO: Label Extractor
-    label_extractor = LabelExtractor(receipe=receipe, nlp=nlp)
-    updated_receipe = label_extractor.run()
+    label_extractor = OriginExtractor(receipe=receipe)
+    updated_receipe = label_extractor.run(nlp=nlp)
     # TODO: Label Finalizer
 
     return updated_receipe

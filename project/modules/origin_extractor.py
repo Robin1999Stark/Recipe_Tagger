@@ -1,9 +1,7 @@
 # from project.objects.receipe import Receipe
-import spacy
 from spacy.language import Language
 import langid
 from sklearn.metrics.pairwise import cosine_similarity
-import nltk
 from collections import Counter
 import re
 from nltk.tokenize import word_tokenize
@@ -705,7 +703,7 @@ def extract_used_languages(text: str):
     return language_names
 
 
-class LabelExtractor:
+class OriginExtractor:
     def __init__(self, receipe: Receipe):
         self.receipe = receipe
 
