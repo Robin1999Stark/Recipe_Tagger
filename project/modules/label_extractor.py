@@ -1,6 +1,6 @@
 from ..objects.receipe import Receipe
 
-class LabelExtractorInterface:
+class LabelExtractor:
     def __init__(self, receipe: Receipe):
         self.receipe = receipe
     

@@ -1,4 +1,5 @@
 from objects.receipe import Receipe
+from modules.label_extractor import LabelExtractor 
 
 def run_pipeline(receipe: Receipe) -> Receipe:   
     # Add Modules here:
@@ -10,10 +11,11 @@ def run_pipeline(receipe: Receipe) -> Receipe:
     # TODD: Translate to english
     
     # TODO: Label Extractor
-    
+    label_extractor = LabelExtractor(receipe=receipe)
+    updated_receipe = label_extractor.run()
     # TODO: Label Finalizer
     
-    return receipe
+    return updated_receipe
 
 def print_receipe(receipe: Receipe):
     receipe.print()
