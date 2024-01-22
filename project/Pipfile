@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 spacy = "*"
+scikit-learn = "*"
+langid = "*"
+nltk = "*"
 
 [dev-packages]
 

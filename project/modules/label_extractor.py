@@ -1,7 +1,12 @@
 # from project.objects.receipe import Receipe
 import spacy
-import sys
-
+from spacy.language import Language
+import langid
+from sklearn.metrics.pairwise import cosine_similarity
+import nltk
+from collections import Counter
+import re
+from nltk.tokenize import word_tokenize
 # needs download of en_core_web_sm from spacy
 # python -m spacy download en_core_web_sm
 
@@ -342,7 +347,7 @@ all_languages_wikipedia = {
     "Southern Min": "zh-min-nan"
 }
 
-top_h_languages_wikipedia = {
+top_100_languages_wikipedia = {
     "English": "en",
     "German": "de",
     "French": "fr",
@@ -512,19 +517,237 @@ top_h_languages_wikipedia = {
     "Kashubian": "csb",
 }
 
+top_50_languages_wikipedia = {
+    "English": "en",
+    "German": "de",
+    "French": "fr",
+    "Spanish": "es",
+    "Japanese": "ja",
+    "Russian": "ru",
+    "Latn": "pt",
+    "Italian": "it",
+    "Chinese": "zh",
+    "Persian": "fa",
+    "Polish": "pl",
+    "Dutch": "nl",
+    "Arabic": "ar",
+    "Ukrainian": "uk",
+    "Hebrew": "he",
+    "Turkish": "tr",
+    "Indonesian": "id",
+    "Czech": "cs",
+    "Swedish": "sv",
+    "Korean": "ko",
+    "Vietnamese": "vi",
+    "Hungarian": "hu",
+    "Finnish": "fi",
+    "Hindi": "hi",
+    "Norwegian": "no",
+    "Catalan": "ca",
+    "Thai": "th",
+    "Greek": "el",
+    "Bengali": "bn",
+    "Romanian": "ro",
+    "Serbian": "sr",
+    "Danish": "da",
+    "Bulgarian": "bg",
+    "Malay": "ms",
+    "Azerbaijani": "az",
+    "Estonian": "et",
+    "Slovak": "sk",
+    "Armenian": "hy",
+    "Uzbek": "uz",
+    "Croatian": "hr",
+    "Basque": "eu",
+    "Slovene": "sl",
+    "Lithuanian": "lt",
+    "Latvian": "lv",
+    "Esperanto": "eo",
+    "Belarusian": "be",
+    "Urdu": "ur",
+    "Kazakh": "kk",
+    "Tamil": "ta",
+    "Georgian": "ka",
+}
+
+langid_language_codes = {
+    "af": "Afrikaans",
+    "am": "Amharic",
+    "an": "Aragonese",
+    "ar": "Arabic",
+    "as": "Assamese",
+    "az": "Azerbaijani",
+    "be": "Belarusian",
+    "bg": "Bulgarian",
+    "bn": "Bengali",
+    "br": "Breton",
+    "bs": "Bosnian",
+    "ca": "Catalan",
+    "cs": "Czech",
+    "cy": "Welsh",
+    "da": "Danish",
+    "de": "German",
+    "dz": "Dzongkha",
+    "el": "Greek",
+    "en": "English",
+    "eo": "Esperanto",
+    "es": "Spanish",
+    "et": "Estonian",
+    "eu": "Basque",
+    "fa": "Persian",
+    "fi": "Finnish",
+    "fo": "Faroese",
+    "fr": "French",
+    "ga": "Irish",
+    "gl": "Galician",
+    "gu": "Gujarati",
+    "he": "Hebrew",
+    "hi": "Hindi",
+    "hr": "Croatian",
+    "ht": "Haitian",
+    "hu": "Hungarian",
+    "hy": "Armenian",
+    "id": "Indonesian",
+    "is": "Icelandic",
+    "it": "Italian",
+    "ja": "Japanese",
+    "jv": "Javanese",
+    "ka": "Georgian",
+    "kk": "Kazakh",
+    "km": "Khmer",
+    "kn": "Kannada",
+    "ko": "Korean",
+    "ku": "Kurdish",
+    "ky": "Kyrgyz",
+    "la": "Latin",
+    "lb": "Luxembourgish",
+    "lo": "Lao",
+    "lt": "Lithuanian",
+    "lv": "Latvian",
+    "mg": "Malagasy",
+    "mk": "Macedonian",
+    "ml": "Malayalam",
+    "mn": "Mongolian",
+    "mr": "Marathi",
+    "ms": "Malay",
+    "mt": "Maltese",
+    "nb": "Burmese",
+    "ne": "Nepali",
+    "nl": "Dutch",
+    "no": "Norwegian",
+    "oc": "Occitan",
+    "or": "Oriya",
+    "pa": "Punjabi",
+    "pl": "Polish",
+    "ps": "Pashto",
+    "pt": "Portuguese",
+    "qu": "Quechua",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "rw": "Kinyarwanda",
+    "se": "Sinhala",
+    "sk": "Slovak",
+    "sl": "Slovenian",
+    "sq": "Albanian",
+    "sr": "Serbian",
+    "sv": "Swedish",
+    "sw": "Swahili",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "th": "Thai",
+    "tl": "Tagalog",
+    "tr": "Turkish",
+    "ug": "Uighur",
+    "uk": "Ukrainian",
+    "ur": "Urdu",
+    "vi": "Vietnamese",
+    "vo": "Volapük",
+    "wa": "Walloon",
+    "xh": "Xhosa",
+    "zh": "Chinese",
+    "zu": "Zulu"
+}
+
+
+def get_most_common_string(strings) -> str:
+    counts = Counter(strings)
+    most_common, _ = counts.most_common(1)[0]
+    return most_common
+
+
+def extract_used_languages(text: str):
+
+    punctuation_pattern = re.compile(r'[^\w\s]')
+    text_without_punct = re.sub(punctuation_pattern, '', text)
+
+    words = word_tokenize(text_without_punct)
+    unique_words = set(words)
+
+    langid.set_languages(list(langid_language_codes.keys()))
+    word_languages_with_confidence = [
+        (langid.classify(word)[0], langid.classify(word)[1]) for word in words]
+
+    # Remove all values with a score below 0.7
+    filtered_word_languages_with_confidence = [(lang, confidence)
+                                               for lang, confidence in word_languages_with_confidence if confidence > 0.8]
+
+    # Remove confidence information
+    word_languages = [lang for lang,
+                      confidence in filtered_word_languages_with_confidence]
+
+    most_common_used_lan: str = get_most_common_string(word_languages)
+
+    word_languages_without_most_common_lan = [
+        lan for lan in word_languages if lan != most_common_used_lan]
+
+    language_names = [langid_language_codes[lan]
+                      for lan in word_languages_without_most_common_lan]
+    return language_names
+
 
 class LabelExtractor:
     def __init__(self, receipe: Receipe):
         self.receipe = receipe
 
-    def run(self) -> Receipe:
-        nlp = spacy.load("en_core_web_sm")
+    def run(self, nlp: Language) -> Receipe:
+        print("##############################################################")
+        print("LABEL EXTRACTOR")
+        print("##############################################################\n")
+        print("Starting Label Extractor... \n")
+
         text = self.receipe.title + ". " + self.receipe.description
         text_nlp = nlp(text)
 
         entities = [ent.text for ent in text_nlp.ents]
-        print(entities)
-        updated_receipe = Receipe(
-            self.receipe.title, self.receipe.description, "", "", [])
+        print("---------------------------------------------------------------")
+        print("Extracted Entities: ", entities)
 
+        entities_wiki_label_dict = {}
+        # NER
+        for entity in entities:
+            e_vec = nlp(entity).vector
+
+            similarities = {}
+            for label in top_50_languages_wikipedia.keys():
+                label_vec = top_50_languages_wikipedia[label]
+                similarities[label] = cosine_similarity(
+                    [e_vec], [nlp(label_vec).vector])[0][0]
+
+            closest_label = max(similarities, key=similarities.get)
+            entities_wiki_label_dict[entity] = closest_label
+
+        # Extract language of words
+
+        used_langs = extract_used_languages(text=text)
+
+        print(used_langs)
+        print("Extracted Origins: ", list(entities_wiki_label_dict.values()))
+
+        origin = max(entities_wiki_label_dict.values(),
+                     key=list(entities_wiki_label_dict.values()).count)
+        print("Selected Origin: ", origin)
+        updated_receipe = Receipe(
+            title=self.receipe.title, description=self.receipe.description, origin=origin, wiki_description="", labels=[])
+        print("Finished Label Extractor!")
+        print("##############################################################\n")
         return updated_receipe

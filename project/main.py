@@ -1,8 +1,11 @@
+import spacy
+from spacy.language import Language
 from objects.receipe import Receipe
 from modules.label_extractor import LabelExtractor
+import nltk
 
 
-def run_pipeline(receipe: Receipe) -> Receipe:
+def run_pipeline(receipe: Receipe, nlp: Language) -> Receipe:
     # Add Modules here:
 
     # TODO: Origin Extractor
@@ -12,7 +15,7 @@ def run_pipeline(receipe: Receipe) -> Receipe:
     # TODD: Translate to english
 
     # TODO: Label Extractor
-    label_extractor = LabelExtractor(receipe=receipe)
+    label_extractor = LabelExtractor(receipe=receipe, nlp=nlp)
     updated_receipe = label_extractor.run()
     # TODO: Label Finalizer
 
@@ -24,6 +27,13 @@ def print_receipe(receipe: Receipe):
 
 
 if __name__ == '__main__':
+
+    # Load Datasets here
+    print("Loading Datasets...")
+    nltk.download('punkt')
+    nlp = spacy.load("en_core_web_md")
+    print("Dataset Loaded\n")
+
     receipe = Receipe("Spicy Garlic Shrimp Pasta Italian",
                       """
                         This Spicy Garlic Shrimp Pasta is a delightful fusion of bold flavors 
@@ -41,6 +51,6 @@ if __name__ == '__main__':
                       "",
                       [])
 
-    updated_receipe = run_pipeline(receipe=receipe)
+    updated_receipe = run_pipeline(receipe=receipe, nlp=nlp)
 
     print(updated_receipe)
