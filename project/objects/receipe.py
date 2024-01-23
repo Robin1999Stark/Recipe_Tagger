@@ -1,3 +1,5 @@
+
+
 class Receipe:
     def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[str]):
         self.title = title
@@ -14,8 +16,3 @@ class Receipe:
         print(f'Wiki Description: {self.wiki_description}')
         print(f'Labels: {self.labels}')
         print('##################################################')
-
-
-
-
-        

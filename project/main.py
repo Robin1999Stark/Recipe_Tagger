@@ -1,16 +1,17 @@
-import spacy
 from spacy.language import Language
 from objects.receipe import Receipe
 from modules.origin_extractor import OriginExtractor
-import nltk
+from modules.datasetloader import DatasetLoader
 
 
 def run_pipeline(receipe: Receipe, nlp: Language) -> Receipe:
     # Add Modules here:
 
-    # Origin Extractor
+    # Origin Extractor - Returns the updated receipe and the wikipedia code of
+    # the origin language
     label_extractor = OriginExtractor(receipe=receipe, nlp=nlp)
     updated_receipe, wiki_code = label_extractor.run()
+
     # TODO: Wiki Api Call
 
     # TODD: Translate to english
@@ -28,11 +29,8 @@ def print_receipe(receipe: Receipe):
 
 if __name__ == '__main__':
 
-    # Load Datasets here
-    print("Loading Datasets...")
-    nltk.download('punkt')
-    nlp = spacy.load("en_core_web_md")
-    print("Dataset Loaded\n")
+    dl = DatasetLoader()
+    nlp = dl.load_data()
 
     receipe1 = Receipe("Spicy Garlic Shrimp Pasta Italian",
                        """
