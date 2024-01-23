@@ -8,6 +8,8 @@ spacy = "*"
 scikit-learn = "*"
 langid = "*"
 nltk = "*"
+geonamescache = "*"
+langdetect = "*"
 
 [dev-packages]
 

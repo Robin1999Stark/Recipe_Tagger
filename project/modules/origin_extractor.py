@@ -1,10 +1,14 @@
 # from project.objects.receipe import Receipe
+import spacy
 from spacy.language import Language
 import langid
-from sklearn.metrics.pairwise import cosine_similarity
 from collections import Counter
 import re
+import queue
+from langdetect import detect_langs
 from nltk.tokenize import word_tokenize
+from typing import List
+from country_named_entity_recognition import find_countries
 # needs download of en_core_web_sm from spacy
 # python -m spacy download en_core_web_sm
 
@@ -27,644 +31,260 @@ class Receipe:
         print('##################################################')
 
 
-all_languages_wikipedia = {
-    "English": "en",
-    "German": "de",
-    "French": "fr",
-    "Spanish": "es",
-    "Japanese": "ja",
-    "Russian": "ru",
-    "Latn": "pt",
-    "Italien": "it",
-    "Chinese": "zh",
-    "Persian": "fa",
-    "Polish": "pl",
-    "Dutch": "nl",
-    "Arabic": "ar",
-    "Ukrainian": "uk",
-    "Hebrew": "he",
-    "Turkish": "tr",
-    "Indonesian": "id",
-    "Czech": "cs",
-    "Swedish": "sv",
-    "Korean": "ko",
-    "Vietnamese": "vi",
-    "Hungarian": "hu",
-    "Finnish": "fi",
-    "Hindi": "hi",
-    "Norwegian": "no",
-    "Catalan": "ca",
-    "Thai": "th",
-    "Greek": "el",
-    "Bengali": "bn",
-    "Romanian": "ro",
-    "Serbian": "sr",
-    "Danish": "da",
-    "Bulgarian": "bg",
-    "Malay": "ms",
-    "Azerbaijani": "az",
-    "Estonian": "et",
-    "Slovak": "sk",
-    "Armenian": "hy",
-    "Uzbek": "uz",
-    "Croatian": "hr",
-    "Basque": "eu",
-    "Slovene": "sl",
-    "Lithuanian": "lt",
-    "Latvian": "lv",
-    "Esperanto": "eo",
-    "Belarusian": "be",
-    "Urdu": "ur",
-    "Kazakh": "kk",
-    "Tamil": "ta",
-    "Georgian": "ka",
-    "Galician": "gl",
-    "Albanian": "sq",
-    "Malayalam": "ml",
-    "Hausa": "ha",
-    "Macedonian": "mk",
-    "Kannada": "kn",
-    "Egyptian Arabic": "arz",
-    "Serbo-Croatian": "sh",
-    "Telugu": "te",
-    "Cebuano": "ceb",
-    "Afrikaans": "af",
-    "Bosnian": "bs",
-    "Marathi": "mr",
-    "Sorani Kurdish": "ckb",
-    "Icelandic": "is",
-    "Norwegian (Nynorsk)": "nn",
-    "Latin": "la",
-    "Kyrgyz": "ky",
-    "Tagalog": "tl",
-    "Belarusian (Classical)": "be-tarask",
-    "Mongolian": "mn",
-    "Sanskrit": "sa",
-    "Swahili": "sw",
-    "Burmese": "my",
-    "Punjabi": "pa",
-    "Asturian": "ast",
-    "Welsh": "cy",
-    "Nepali": "ne",
-    "Assamese": "as",
-    "South Azerbaijani": "azb",
-    "Kurdish (Kurmanji)": "ku",
-    "Occitan": "oc",
-    "Tajik": "tg",
-    "Breton": "br",
-    "Javanese": "jv",
-    "Alemannic": "als",
-    "Irish": "ga",
-    "Scots": "sco",
-    "Luxembourgish": "lb",
-    "West Frisian": "fy",
-    "Tatar": "tt",
-    "Sinhala": "si",
-    "Gujarati": "gu",
-    "Somali": "so",
-    "Odia": "or",
-    "Yoruba": "yo",
-    "Western Punjabi": "pnb",
-    "Waray": "war",
-    "Yiddish": "yi",
-    "Haitian Creole": "ht",
-    "Igbo": "ig",
-    "Aragonese": "an",
-    "Bashkir": "ba",
-    "Classical Chinese": "zh-classical",
-    "Khmer": "km",
-    "Minangkabau": "min",
-    "Ido": "io",
-    "Moroccan Arabic": "ary",
-    "Bavarian": "bar",
-    "Chechen": "ce",
-    "Pashto": "ps",
-    "Lombard": "lmo",
-    "Chuvash": "cv",
-    "Kinyarwanda": "rw",
-    "Amharic": "am",
-    "Interlingua": "ia",
-    "Central Bikol": "bcl",
-    "Malagasy": "mg",
-    "Maltese": "mt",
-    "Wu Chinese": "wuu",
-    "Silesian": "szl",
-    "Old English": "ang",
-    "Balinese": "ban",
-    "Bhojpuri": "bh",
-    "Sicilian": "scn",
-    "Faroese": "fo",
-    "Mazanderani": "mzn",
-    "Quechua": "qu",
-    "Low German": "nds",
-    "Sundanese": "su",
-    "Maithili": "mai",
-    "Upper Sorbian": "hsb",
-    "Mingrelian": "xmf",
-    "Abkhaz": "ab",
-    "Lao": "lo",
-    "Tibetan": "bo",
-    "Gorontalo": "gor",
-    "Neapolitan": "nap",
-    "Venetian": "vec",
-    "Banjarese": "bjn",
-    "Corsican": "co",
-    "Gan Chinese": "gan",
-    "Kapampangan": "pam",
-    "Rusyn": "rue",
-    "Turkmen": "tk",
-    "Limburgish": "li",
-    "Talysh": "tly",
-    "Yakut": "sah",
-    "Oromo": "om",
-    "Guarani": "gn",
-    "Dagbani": "dag",
-    "Interlingue": "ie",
-    "Volapük": "vo",
-    "Western Armenian": "hyw",
-    "Kabyle": "kab",
-    "Twi": "tw",
-    "Walloon": "wa",
-    "Judaeo-Spanish": "lad",
-    "Scottish Gaelic": "gd",
-    "Eastern Min": "cdo",
-    "Fula": "ff",
-    "Extremaduran": "ext",
-    "Ladin": "lld",
-    "Ossetian": "os",
-    "Hakka Chinese": "hak",
-    "Karakalpak": "kaa",
-    "Kashubian": "csb",
-    "Lingua Franca Nova": "lfn",
-    "Saraiki": "skr",
-    "Uyghur": "ug",
-    "Zazaki": "diq",
-    "Meadow Mari": "mhr",
-    "Papiamento": "pap",
-    "Veps": "vep",
-    "West Flemish": "vls",
-    "Dutch Low Saxon": "nds-nl",
-    "Samogitian": "bat-smg",
-    "Cree": "cr",
-    "Kotava": "avk",
-    "Mirandese": "mwl",
-    "North Frisian": "frr",
-    "Old Church Slavonic": "cu",
-    "Tulu": "tcy",
-    "Dzongkha": "dz",
-    "Newar": "new",
-    "Picard": "pcd",
-    "Banyumasan": "map-bms",
-    "Hawaiian": "haw",
-    "Ilocano": "ilo",
-    "Komi": "kv",
-    "Ligurian": "lij",
-    "Sardinian": "sc",
-    "Tyap": "kcg",
-    "Aymara": "ay",
-    "Maldivian": "dv",
-    "Northern Sámi": "se",
-    "Tuvan": "tyv",
-    "Emilian-Romagnol": "eml",
-    "Inuktitut": "iu",
-    "Nigerian Pidgin": "pcm",
-    "Tumbuka": "tum",
-    "Udmurt": "udm",
-    "Buginese": "bug",
-    "Ingush": "inh",
-    "Kabiye": "kbp",
-    "Lingala": "ln",
-    "Lower Sorbian": "dsb",
-    "Shona": "sn",
-    "Avar": "av",
-    "Bishnupriya Manipuri": "bpy",
-    "Franco-Provençal": "frp",
-    "Gilaki": "glk",
-    "Māori": "mi",
-    "Tarantino": "roa-tara",
-    "Tigrinya": "ti",
-    "Tok Pisin": "tpi",
-    "Aromanian": "roa-rup",
-    "Buryat": "bxr",
-    "Cornish": "kw",
-    "Ewe": "ee",
-    "Friulian": "fur",
-    "Gagauz": "gag",
-    "Inari Sámi": "smn",
-    "Norfuk": "pih",
-    "Norman": "nrm",
-    "Pangasinan": "pag",
-    "Xhosa": "xh",
-    "Zeelandic": "zea",
-    "Kashmiri": "ks",
-    "Atayal": "tay",
-    "Atikamekw": "atj",
-    "Erzya": "myv",
-    "Fon": "fon",
-    "Kalmyk": "xal",
-    "Kirundi": "rn",
-    "Lezgian": "lez",
-    "Livvi-Karelian": "olo",
-    "Manx": "gv",
-    "Meitei": "mni",
-    "Nahuatl": "nah",
-    "Pa'O": "blk",
-    "Shan": "shn",
-    "Shilha": "shi",
-    "Awadhi": "awa",
-    "Cherokee": "chr",
-    "Hill Mari": "mrj",
-    "Kabardian": "kbd",
-    "Moksha": "mdf",
-    "Romani": "rmy",
-    "Romansh": "rm",
-    "Sakizaya": "szy",
-    "Konkani": "gom",
-    "Gothic": "got",
-    "Karachay-Balkar": "krc",
-    "N'Ko": "nqo",
-    "Palatine German": "pfl",
-    "Pennsylvania Dutch": "pdc",
-    "Ripuarian": "ksh",
-    "Amis": "ami",
-    "Doteli": "dty",
-    "Komi-Permyak": "koi",
-    "Latgalian": "ltg",
-    "Mon": "mnw",
-    "Northern Sotho": "nso",
-    "Southern Altai": "alt",
-    "Zhuang": "za",
-    "Wolof": "wo",
-    "Adyghe": "ady",
-    "Chamorro": "ch",
-    "Fante": "fat",
-    "Iñupiaq": "ik",
-    "Lojban": "jbo",
-    "Navajo": "nv",
-    "Sotho": "st",
-    "Tongan": "to",
-    "Võro": "fiu-vro",
-    "Bambara": "bm",
-    "Aramaic": "arc",
-    "Ghanaian Pidgin": "gpe",
-    "Gun": "guw",
-    "Jamaican Patois": "jam",
-    "Kikuyu": "ki",
-    "Lak": "lbe",
-    "Madurese": "mad",
-    "Novial": "nov",
-    "Saterland Frisian": "stq",
-    "Angika": "anp",
-    "Bislama": "bi",
-    "Chewa": "ny",
-    "Gurene": "gur",
-    "Kongo": "kg",
-    "Luganda": "lg",
-    "Nias": "nia",
-    "Pontic": "pnt",
-    "Samoan": "sm",
-    "Seediq": "trv",
-    "Swazi": "ss",
-    "Tswana": "tn",
-    "Chavacano": "cbk-zam",
-    "Guianan Creole": "gcr",
-    "Pali": "pi",
-    "Tetum": "tet",
-    "Greenlandic": "kl",
-    "Sranan Tongo": "srn",
-    "Paiwan": "pwn",
-    "Venda": "ve",
-    "Dinka": "din",
-    "Fijian": "fj",
-    "Sango": "sg",
-    "Tahitian": "ty",
-    "Tsonga": "ts",
-    "Cheyenne": "chy",
-    "Wayuu": "guc",
-    "Cantonese": "zh-yue",
-    "Southern Min": "zh-min-nan"
-}
+def create_languages_countries(countries_languages):
 
-top_100_languages_wikipedia = {
-    "English": "en",
-    "German": "de",
-    "French": "fr",
-    "Spanish": "es",
-    "Japanese": "ja",
-    "Russian": "ru",
-    "Latn": "pt",
-    "Italien": "it",
-    "Chinese": "zh",
-    "Persian": "fa",
-    "Polish": "pl",
-    "Dutch": "nl",
-    "Arabic": "ar",
-    "Ukrainian": "uk",
-    "Hebrew": "he",
-    "Turkish": "tr",
-    "Indonesian": "id",
-    "Czech": "cs",
-    "Swedish": "sv",
-    "Korean": "ko",
-    "Vietnamese": "vi",
-    "Hungarian": "hu",
-    "Finnish": "fi",
-    "Hindi": "hi",
-    "Norwegian": "no",
-    "Catalan": "ca",
-    "Thai": "th",
-    "Greek": "el",
-    "Bengali": "bn",
-    "Romanian": "ro",
-    "Serbian": "sr",
-    "Danish": "da",
-    "Bulgarian": "bg",
-    "Malay": "ms",
-    "Azerbaijani": "az",
-    "Estonian": "et",
-    "Slovak": "sk",
-    "Armenian": "hy",
-    "Uzbek": "uz",
-    "Croatian": "hr",
-    "Basque": "eu",
-    "Slovene": "sl",
-    "Lithuanian": "lt",
-    "Latvian": "lv",
-    "Esperanto": "eo",
-    "Belarusian": "be",
-    "Urdu": "ur",
-    "Kazakh": "kk",
-    "Tamil": "ta",
-    "Georgian": "ka",
-    "Galician": "gl",
-    "Albanian": "sq",
-    "Malayalam": "ml",
-    "Hausa": "ha",
-    "Macedonian": "mk",
-    "Kannada": "kn",
-    "Egyptian Arabic": "arz",
-    "Serbo-Croatian": "sh",
-    "Telugu": "te",
-    "Cebuano": "ceb",
-    "Afrikaans": "af",
-    "Bosnian": "bs",
-    "Marathi": "mr",
-    "Sorani Kurdish": "ckb",
-    "Icelandic": "is",
-    "Norwegian (Nynorsk)": "nn",
-    "Latin": "la",
-    "Kyrgyz": "ky",
-    "Tagalog": "tl",
-    "Belarusian (Classical)": "be-tarask",
-    "Mongolian": "mn",
-    "Sanskrit": "sa",
-    "Swahili": "sw",
-    "Burmese": "my",
-    "Punjabi": "pa",
-    "Asturian": "ast",
-    "Welsh": "cy",
-    "Nepali": "ne",
-    "Assamese": "as",
-    "South Azerbaijani": "azb",
-    "Kurdish (Kurmanji)": "ku",
-    "Occitan": "oc",
-    "Tajik": "tg",
-    "Breton": "br",
-    "Javanese": "jv",
-    "Alemannic": "als",
-    "Irish": "ga",
-    "Scots": "sco",
-    "Luxembourgish": "lb",
-    "West Frisian": "fy",
-    "Tatar": "tt",
-    "Sinhala": "si",
-    "Gujarati": "gu",
-    "Somali": "so",
-    "Odia": "or",
-    "Yoruba": "yo",
-    "Western Punjabi": "pnb",
-    "Waray": "war",
-    "Yiddish": "yi",
-    "Haitian Creole": "ht",
-    "Igbo": "ig",
-    "Aragonese": "an",
-    "Bashkir": "ba",
-    "Classical Chinese": "zh-classical",
-    "Khmer": "km",
-    "Minangkabau": "min",
-    "Ido": "io",
-    "Moroccan Arabic": "ary",
-    "Bavarian": "bar",
-    "Chechen": "ce",
-    "Pashto": "ps",
-    "Lombard": "lmo",
-    "Chuvash": "cv",
-    "Kinyarwanda": "rw",
-    "Amharic": "am",
-    "Interlingua": "ia",
-    "Central Bikol": "bcl",
-    "Malagasy": "mg",
-    "Maltese": "mt",
-    "Wu Chinese": "wuu",
-    "Silesian": "szl",
-    "Old English": "ang",
-    "Balinese": "ban",
-    "Bhojpuri": "bh",
-    "Sicilian": "scn",
-    "Faroese": "fo",
-    "Mazanderani": "mzn",
-    "Quechua": "qu",
-    "Low German": "nds",
-    "Sundanese": "su",
-    "Maithili": "mai",
-    "Upper Sorbian": "hsb",
-    "Mingrelian": "xmf",
-    "Abkhaz": "ab",
-    "Lao": "lo",
-    "Tibetan": "bo",
-    "Gorontalo": "gor",
-    "Neapolitan": "nap",
-    "Venetian": "vec",
-    "Banjarese": "bjn",
-    "Corsican": "co",
-    "Gan Chinese": "gan",
-    "Kapampangan": "pam",
-    "Rusyn": "rue",
-    "Turkmen": "tk",
-    "Limburgish": "li",
-    "Talysh": "tly",
-    "Yakut": "sah",
-    "Oromo": "om",
-    "Guarani": "gn",
-    "Dagbani": "dag",
-    "Interlingue": "ie",
-    "Volapük": "vo",
-    "Western Armenian": "hyw",
-    "Kabyle": "kab",
-    "Twi": "tw",
-    "Walloon": "wa",
-    "Judaeo-Spanish": "lad",
-    "Scottish Gaelic": "gd",
-    "Eastern Min": "cdo",
-    "Fula": "ff",
-    "Extremaduran": "ext",
-    "Ladin": "lld",
-    "Ossetian": "os",
-    "Hakka Chinese": "hak",
-    "Karakalpak": "kaa",
-    "Kashubian": "csb",
-}
+    languages_countries = {}
 
-top_50_languages_wikipedia = {
-    "English": "en",
-    "German": "de",
-    "French": "fr",
-    "Spanish": "es",
-    "Japanese": "ja",
-    "Russian": "ru",
-    "Latn": "pt",
-    "Italian": "it",
-    "Chinese": "zh",
-    "Persian": "fa",
-    "Polish": "pl",
-    "Dutch": "nl",
-    "Arabic": "ar",
-    "Ukrainian": "uk",
-    "Hebrew": "he",
-    "Turkish": "tr",
-    "Indonesian": "id",
-    "Czech": "cs",
-    "Swedish": "sv",
-    "Korean": "ko",
-    "Vietnamese": "vi",
-    "Hungarian": "hu",
-    "Finnish": "fi",
-    "Hindi": "hi",
-    "Norwegian": "no",
-    "Catalan": "ca",
-    "Thai": "th",
-    "Greek": "el",
-    "Bengali": "bn",
-    "Romanian": "ro",
-    "Serbian": "sr",
-    "Danish": "da",
-    "Bulgarian": "bg",
-    "Malay": "ms",
-    "Azerbaijani": "az",
-    "Estonian": "et",
-    "Slovak": "sk",
-    "Armenian": "hy",
-    "Uzbek": "uz",
-    "Croatian": "hr",
-    "Basque": "eu",
-    "Slovene": "sl",
-    "Lithuanian": "lt",
-    "Latvian": "lv",
-    "Esperanto": "eo",
-    "Belarusian": "be",
-    "Urdu": "ur",
-    "Kazakh": "kk",
-    "Tamil": "ta",
-    "Georgian": "ka",
-}
+    for country, language in countries_languages.items():
+        if language in languages_countries:
+            languages_countries[language].append(country)
+        else:
+            languages_countries[language] = [country]
 
-langid_language_codes = {
-    "af": "Afrikaans",
-    "am": "Amharic",
-    "an": "Aragonese",
-    "ar": "Arabic",
-    "as": "Assamese",
-    "az": "Azerbaijani",
-    "be": "Belarusian",
-    "bg": "Bulgarian",
-    "bn": "Bengali",
-    "br": "Breton",
-    "bs": "Bosnian",
-    "ca": "Catalan",
-    "cs": "Czech",
-    "cy": "Welsh",
-    "da": "Danish",
-    "de": "German",
-    "dz": "Dzongkha",
-    "el": "Greek",
-    "en": "English",
-    "eo": "Esperanto",
-    "es": "Spanish",
-    "et": "Estonian",
-    "eu": "Basque",
-    "fa": "Persian",
-    "fi": "Finnish",
-    "fo": "Faroese",
-    "fr": "French",
-    "ga": "Irish",
-    "gl": "Galician",
-    "gu": "Gujarati",
-    "he": "Hebrew",
-    "hi": "Hindi",
-    "hr": "Croatian",
-    "ht": "Haitian",
-    "hu": "Hungarian",
-    "hy": "Armenian",
-    "id": "Indonesian",
-    "is": "Icelandic",
-    "it": "Italian",
-    "ja": "Japanese",
-    "jv": "Javanese",
-    "ka": "Georgian",
-    "kk": "Kazakh",
-    "km": "Khmer",
-    "kn": "Kannada",
-    "ko": "Korean",
-    "ku": "Kurdish",
-    "ky": "Kyrgyz",
-    "la": "Latin",
-    "lb": "Luxembourgish",
-    "lo": "Lao",
-    "lt": "Lithuanian",
-    "lv": "Latvian",
-    "mg": "Malagasy",
-    "mk": "Macedonian",
-    "ml": "Malayalam",
-    "mn": "Mongolian",
-    "mr": "Marathi",
-    "ms": "Malay",
-    "mt": "Maltese",
-    "nb": "Burmese",
-    "ne": "Nepali",
-    "nl": "Dutch",
-    "no": "Norwegian",
-    "oc": "Occitan",
-    "or": "Oriya",
-    "pa": "Punjabi",
-    "pl": "Polish",
-    "ps": "Pashto",
-    "pt": "Portuguese",
-    "qu": "Quechua",
-    "ro": "Romanian",
-    "ru": "Russian",
-    "rw": "Kinyarwanda",
-    "se": "Sinhala",
-    "sk": "Slovak",
-    "sl": "Slovenian",
-    "sq": "Albanian",
-    "sr": "Serbian",
-    "sv": "Swedish",
-    "sw": "Swahili",
-    "ta": "Tamil",
-    "te": "Telugu",
-    "th": "Thai",
-    "tl": "Tagalog",
-    "tr": "Turkish",
-    "ug": "Uighur",
-    "uk": "Ukrainian",
-    "ur": "Urdu",
-    "vi": "Vietnamese",
-    "vo": "Volapük",
-    "wa": "Walloon",
-    "xh": "Xhosa",
-    "zh": "Chinese",
-    "zu": "Zulu"
-}
+    return languages_countries
+
+
+class Country:
+
+    languages_wiki = {
+        "English": "en",
+        "German": "de",
+        "French": "fr",
+        "Spanish": "es",
+        "Japanese": "ja",
+        "Russian": "ru",
+        "Latn": "pt",
+        "Italian": "it",
+        "Chinese": "zh",
+        "Persian": "fa",
+        "Polish": "pl",
+        "Dutch": "nl",
+        "Arabic": "ar",
+        "Ukrainian": "uk",
+        "Hebrew": "he",
+        "Turkish": "tr",
+        "Indonesian": "id",
+        "Czech": "cs",
+        "Swedish": "sv",
+        "Korean": "ko",
+        "Vietnamese": "vi",
+        "Hungarian": "hu",
+        "Finnish": "fi",
+        "Hindi": "hi",
+        "Norwegian": "no",
+        "Catalan": "ca",
+        "Thai": "th",
+        "Greek": "el",
+        "Bengali": "bn",
+        "Romanian": "ro",
+        "Serbian": "sr",
+        "Danish": "da",
+        "Bulgarian": "bg",
+        "Malay": "ms",
+        "Azerbaijani": "az",
+        "Estonian": "et",
+        "Slovak": "sk",
+        "Armenian": "hy",
+        "Uzbek": "uz",
+        "Croatian": "hr",
+        "Basque": "eu",
+        "Slovene": "sl",
+        "Lithuanian": "lt",
+        "Latvian": "lv",
+        "Esperanto": "eo",
+        "Belarusian": "be",
+        "Urdu": "ur",
+        "Kazakh": "kk",
+        "Tamil": "ta",
+        "Georgian": "ka",
+    }
+    langid_languages = {
+        "af": "Afrikaans",
+        "an": "Aragonese",
+        "ar": "Arabic",
+        "as": "Assamese",
+        "az": "Azerbaijani",
+        "be": "Belarusian",
+        "bg": "Bulgarian",
+        "bn": "Bengali",
+        "br": "Breton",
+        "bs": "Bosnian",
+        "ca": "Catalan",
+        "cs": "Czech",
+        "cy": "Welsh",
+        "da": "Danish",
+        "de": "German",
+        "dz": "Dzongkha",
+        "el": "Greek",
+        "en": "English",
+        "eo": "Esperanto",
+        "es": "Spanish",
+        "et": "Estonian",
+        "eu": "Basque",
+        "fa": "Persian",
+        "fi": "Finnish",
+        "fo": "Faroese",
+        "fr": "French",
+        "ga": "Irish",
+        "gl": "Galician",
+        "gu": "Gujarati",
+        "he": "Hebrew",
+        "hi": "Hindi",
+        "hr": "Croatian",
+        "ht": "Haitian",
+        "hu": "Hungarian",
+        "hy": "Armenian",
+        "id": "Indonesian",
+        "is": "Icelandic",
+        "it": "Italian",
+        "ja": "Japanese",
+        "jv": "Javanese",
+        "ka": "Georgian",
+        "kk": "Kazakh",
+        "km": "Khmer",
+        "kn": "Kannada",
+        "ko": "Korean",
+        "ku": "Kurdish",
+        "ky": "Kyrgyz",
+        "la": "Latin",
+        "lb": "Luxembourgish",
+        "lo": "Lao",
+        "lt": "Lithuanian",
+        "lv": "Latvian",
+        "mg": "Malagasy",
+        "mk": "Macedonian",
+        "ml": "Malayalam",
+        "mn": "Mongolian",
+        "mr": "Marathi",
+        "ms": "Malay",
+        "mt": "Maltese",
+        "nb": "Burmese",
+        "ne": "Nepali",
+        "nl": "Dutch",
+        "no": "Norwegian",
+        "oc": "Occitan",
+        "or": "Oriya",
+        "pa": "Punjabi",
+        "pl": "Polish",
+        "ps": "Pashto",
+        "pt": "Portuguese",
+        "qu": "Quechua",
+        "ro": "Romanian",
+        "ru": "Russian",
+        "rw": "Kinyarwanda",
+        "se": "Sinhala",
+        "sk": "Slovak",
+        "sl": "Slovenian",
+        "sq": "Albanian",
+        "sr": "Serbian",
+        "sv": "Swedish",
+        "sw": "Swahili",
+        "ta": "Tamil",
+        "te": "Telugu",
+        "th": "Thai",
+        "tl": "Tagalog",
+        "tr": "Turkish",
+        "ug": "Uighur",
+        "uk": "Ukrainian",
+        "ur": "Urdu",
+        "vi": "Vietnamese",
+        "vo": "Volapük",
+        "wa": "Walloon",
+        "xh": "Xhosa",
+        "zh": "Chinese",
+        "zu": "Zulu"
+    }
+    countries_languages = {
+        "England": "English",
+        "Germany": "German",
+        "France": "French",
+        "Spain": "Spanish",
+        "Japan": "Japanese",
+        "Russia": "Russian",
+        "Portugal": "Latn",
+        "Italy": "Italian",
+        "China": "Chinese",
+        "Iran": "Persian",
+        "Poland": "Polish",
+        "Netherlands": "Dutch",
+        "Arab World": "Arabic",
+        "Ukraine": "Ukrainian",
+        "Israel": "Hebrew",
+        "Turkey": "Turkish",
+        "Indonesia": "Indonesian",
+        "Czech Republic": "Czech",
+        "Sweden": "Swedish",
+        "South Korea": "Korean",
+        "Vietnam": "Vietnamese",
+        "Hungary": "Hungarian",
+        "Finland": "Finnish",
+        "India": "Hindi",
+        "Norway": "Norwegian",
+        "Catalonia": "Catalan",
+        "Thailand": "Thai",
+        "Greece": "Greek",
+        "Bangladesh": "Bengali",
+        "Romania": "Romanian",
+        "Serbia": "Serbian",
+        "Denmark": "Danish",
+        "Bulgaria": "Bulgarian",
+        "Malaysia": "Malay",
+        "Azerbaijan": "Azerbaijani",
+        "Estonia": "Estonian",
+        "Slovakia": "Slovak",
+        "Armenia": "Armenian",
+        "Uzbekistan": "Uzbek",
+        "Croatia": "Croatian",
+        "Basque Country": "Basque",
+        "Slovenia": "Slovene",
+        "Lithuania": "Lithuanian",
+        "Latvia": "Latvian",
+        "Esperanto": "Esperanto",
+        "Belarus": "Belarusian",
+        "Pakistan": "Urdu",
+        "Kazakhstan": "Kazakh",
+        "Tamil Nadu": "Tamil",
+        "Georgia": "Georgian",
+    }
+
+    languages_countries = create_languages_countries(
+        countries_languages=countries_languages)
+
+    def __init__(self, name: str):
+        self.name = name
+        self.lang = Country.countries_languages[name]
+        self.wiki_code = Country.languages_wiki[self.lang]
+
+    def get_wiki_code(self):
+        Country.languages_wiki[self.lang]
+
+
+def extract_multi_word_phrases(sentence, nlp):
+    # Process the input sentence using spaCy
+    doc = nlp(sentence)
+
+    # Extract noun chunks (multi-word phrases)
+    phrases = [chunk.text for chunk in doc.noun_chunks]
+
+    return phrases
+
+
+def remove_whitespace_sequences(text):
+    # Define a regular expression pattern for matching whitespace sequences
+    whitespace_pattern = re.compile(r'\s+')
+
+    # Use sub() to replace matched sequences with a single space
+    cleaned_text = re.sub(whitespace_pattern, ' ', text)
+
+    return cleaned_text
+
+
+def preprocess_input(text: str):
+    text = remove_whitespace_sequences(text=text)
+    tokenized_text = word_tokenize(text=text)
+
+    joined_string = ' '.join(tokenized_text)
+    return joined_string
 
 
 def get_most_common_string(strings) -> str:
@@ -673,79 +293,110 @@ def get_most_common_string(strings) -> str:
     return most_common
 
 
-def extract_used_languages(text: str):
+def extract_countries_from_language(text: str, nlp, standard_lang_id="en"):
 
-    punctuation_pattern = re.compile(r'[^\w\s]')
-    text_without_punct = re.sub(punctuation_pattern, '', text)
+    multi_word_phrases = extract_multi_word_phrases(text, nlp=nlp)
+    countries_conf = list()
 
-    words = word_tokenize(text_without_punct)
-    unique_words = set(words)
+    for word_phrase in multi_word_phrases:
+        langs = detect_langs(text=word_phrase)
 
-    langid.set_languages(list(langid_language_codes.keys()))
-    word_languages_with_confidence = [
-        (langid.classify(word)[0], langid.classify(word)[1]) for word in words]
+        for lang_info in langs:
+            lang = lang_info.lang
+            conf = lang_info.prob
+            if (conf > 0.9 and lang != standard_lang_id):
+                country_name = Country.languages_countries[Country.langid_languages[lang]][0]
+                country = Country(country_name)
+                countries_conf.append((country, conf))
 
-    # Remove all values with a score below 0.7
-    filtered_word_languages_with_confidence = [(lang, confidence)
-                                               for lang, confidence in word_languages_with_confidence if confidence > 0.8]
+    return [c[0] for c in countries_conf]
 
-    # Remove confidence information
-    word_languages = [lang for lang,
-                      confidence in filtered_word_languages_with_confidence]
 
-    most_common_used_lan: str = get_most_common_string(word_languages)
+def extract_countries(text):
 
-    word_languages_without_most_common_lan = [
-        lan for lan in word_languages if lan != most_common_used_lan]
+    extracted_countries = find_countries(text=text,
+                                         is_ignore_case=True,
+                                         is_georgia_probably_the_country=True)
 
-    language_names = [langid_language_codes[lan]
-                      for lan in word_languages_without_most_common_lan]
-    return language_names
+    countries = list()
+    for c in extracted_countries:
+        country = Country(c[0].name)
+        countries.append(country)
+
+    return countries
+
+
+def max_pool_country(countries: List[Country]) -> Country:
+    country_counts = Counter(country.name for country in countries)
+    max_country_name = max(country_counts, key=country_counts.get)
+    max_country = next(
+        country for country in countries if country.name == max_country_name)
+    return max_country
 
 
 class OriginExtractor:
-    def __init__(self, receipe: Receipe):
+    def __init__(self, receipe: Receipe, nlp: Language, ignore_lan=Country("England")):
         self.receipe = receipe
+        self.nlp = nlp
+        self.ignore_lan = ignore_lan
 
-    def run(self, nlp: Language) -> Receipe:
+        self.extract_countries = extract_countries
+        self.extract_countries_from_language = extract_countries_from_language
+        self.max_pool_country = max_pool_country
+
+    def run(self) -> Receipe:
+
         print("##############################################################")
         print("LABEL EXTRACTOR")
         print("##############################################################\n")
         print("Starting Label Extractor... \n")
 
-        text = self.receipe.title + ". " + self.receipe.description
-        text_nlp = nlp(text)
+        title = preprocess_input(self.receipe.title)
+        description = preprocess_input(self.receipe.description)
 
-        entities = [ent.text for ent in text_nlp.ents]
-        print("---------------------------------------------------------------")
-        print("Extracted Entities: ", entities)
+        # Extract countries
+        countries_from_title = self.extract_countries(text=title)
+        countries_from_description = self.extract_countries(text=description)
+        countries = countries_from_title + countries_from_description
 
-        entities_wiki_label_dict = {}
-        # NER
-        for entity in entities:
-            e_vec = nlp(entity).vector
+        if (len(countries) > 0):
 
-            similarities = {}
-            for label in top_50_languages_wikipedia.keys():
-                label_vec = top_50_languages_wikipedia[label]
-                similarities[label] = cosine_similarity(
-                    [e_vec], [nlp(label_vec).vector])[0][0]
+            best_country = self.max_pool_country(countries=countries)
 
-            closest_label = max(similarities, key=similarities.get)
-            entities_wiki_label_dict[entity] = closest_label
+            updated_receipe = Receipe(
+                title=self.receipe.title, description=self.receipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
-        # Extract language of words
+            print("Finished Label Extractor!")
+            print("##############################################################\n")
 
-        used_langs = extract_used_languages(text=text)
+            return updated_receipe, best_country.get_wiki_code()
 
-        print(used_langs)
-        print("Extracted Origins: ", list(entities_wiki_label_dict.values()))
+        # Extract countries from text language
+        countries_from_language_title = self.extract_countries_from_language(
+            text=title, nlp=self.nlp)
+        countries_from_language_description = self.extract_countries_from_language(
+            text=description, nlp=self.nlp)
+        countries_from_language = countries_from_language_title + \
+            countries_from_language_description
 
-        origin = max(entities_wiki_label_dict.values(),
-                     key=list(entities_wiki_label_dict.values()).count)
-        print("Selected Origin: ", origin)
+        if (len(countries_from_language) > 0):
+
+            best_country = self.max_pool_country(
+                countries=countries_from_language)
+
+            updated_receipe = Receipe(
+                title=self.receipe.title, description=self.receipe.description, origin=best_country.lang, wiki_description="", labels=[])
+
+            print("Finished Label Extractor!")
+            print("##############################################################\n")
+
+            return updated_receipe, best_country.get_wiki_code()
+
+        # If nothing is found return the standard language (English)
         updated_receipe = Receipe(
-            title=self.receipe.title, description=self.receipe.description, origin=origin, wiki_description="", labels=[])
+            title=self.receipe.title, description=self.receipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
+
         print("Finished Label Extractor!")
         print("##############################################################\n")
-        return updated_receipe
+
+        return updated_receipe, self.ignore_lan.get_wiki_code()

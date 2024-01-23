@@ -8,15 +8,15 @@ import nltk
 def run_pipeline(receipe: Receipe, nlp: Language) -> Receipe:
     # Add Modules here:
 
-    # TODO: Origin Extractor
-
+    # Origin Extractor
+    label_extractor = OriginExtractor(receipe=receipe, nlp=nlp)
+    updated_receipe, wiki_code = label_extractor.run()
     # TODO: Wiki Api Call
 
     # TODD: Translate to english
 
     # TODO: Label Extractor
-    label_extractor = OriginExtractor(receipe=receipe)
-    updated_receipe = label_extractor.run(nlp=nlp)
+
     # TODO: Label Finalizer
 
     return updated_receipe
@@ -34,23 +34,38 @@ if __name__ == '__main__':
     nlp = spacy.load("en_core_web_md")
     print("Dataset Loaded\n")
 
-    receipe = Receipe("Spicy Garlic Shrimp Pasta Italian",
-                      """
-                        This Spicy Garlic Shrimp Pasta is a delightful fusion of bold flavors 
+    receipe1 = Receipe("Spicy Garlic Shrimp Pasta Italian",
+                       """
+                        This Spicy Garlic Shrimp Pasta from Italy is a delightful fusion of bold flavors 
                         and comforting textures. Succulent shrimp are sautéed to perfection
                         in a spicy garlic-infused olive oil, creating a mouthwatering base 
                         for the pasta. The dish is then elevated with a medley of vibrant 
-                        vegetables and a creamy tomato sauce that perfectly balances the heat. 
-                        Tossed with al dente linguine and garnished with fresh parsley and 
+                        vegetables and a creamy Rome tomato sauce that perfectly balances the heat. 
+                        Tossed with al dente linguine Toscana and garnished with fresh parsley and 
                         grated Parmesan, this dish is a celebration of both simplicity and 
                         sophistication. It's a quick and impressive recipe that will satisfy 
                         your cravings for a flavorful and satisfying meal.")
                     
                     """,
-                      "",
-                      "",
-                      [])
+                       "",
+                       "",
+                       [])
 
-    updated_receipe = run_pipeline(receipe=receipe, nlp=nlp)
+    updated_receipe = run_pipeline(receipe=receipe1, nlp=nlp)
 
-    print(updated_receipe)
+    print_receipe(updated_receipe)
+
+    receipe2 = Receipe("Spaghetti Bolognese",
+                       """
+                        Spaghetti Bolognese is a classic Italian pasta dish.
+                        It features a rich and savory meat sauce served over cooked spaghetti.
+                        Garnish with grated Parmesan cheese and fresh basil for a delicious 
+                        meal.                    
+                        """,
+                       "",
+                       "",
+                       [])
+
+    updated_receipe = run_pipeline(receipe=receipe2, nlp=nlp)
+
+    print_receipe(updated_receipe)
