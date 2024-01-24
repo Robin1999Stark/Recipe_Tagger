@@ -16,3 +16,7 @@ class Receipe:
         print(f'Wiki Description: {self.wiki_description}')
         print(f'Labels: {self.labels}')
         print('##################################################')
+
+
+def print_receipe(receipe: Receipe):
+    receipe.print()

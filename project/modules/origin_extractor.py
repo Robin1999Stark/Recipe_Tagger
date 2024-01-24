@@ -85,24 +85,22 @@ def max_pool_country(countries: List[Country]) -> Country:
 
 
 class OriginExtractor:
-    def __init__(self, receipe: Receipe, nlp: Language, ignore_lan=Country("England")):
-        self.receipe = receipe
+    def __init__(self, nlp: Language, ignore_lan=Country("England")):
         self.nlp = nlp
         self.ignore_lan = ignore_lan
-
         self.extract_countries = extract_countries
         self.extract_countries_from_language = extract_countries_from_language
         self.max_pool_country = max_pool_country
 
-    def run(self) -> Receipe:
+    def run(self, recipe: Receipe) -> Receipe:
 
         print("##############################################################")
         print("LABEL EXTRACTOR")
         print("##############################################################\n")
         print("Starting Label Extractor... \n")
 
-        title = preprocess_input(self.receipe.title)
-        description = preprocess_input(self.receipe.description)
+        title = preprocess_input(recipe.title)
+        description = preprocess_input(recipe.description)
 
         # Extract countries
         countries_from_title = self.extract_countries(text=title)
@@ -113,13 +111,13 @@ class OriginExtractor:
 
             best_country = self.max_pool_country(countries=countries)
 
-            updated_receipe = Receipe(
-                title=self.receipe.title, description=self.receipe.description, origin=best_country.lang, wiki_description="", labels=[])
+            updated_recipe = Receipe(
+                title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
             print("Finished Label Extractor!")
             print("##############################################################\n")
 
-            return updated_receipe, best_country.get_wiki_code()
+            return updated_recipe, best_country.get_wiki_code()
 
         # Extract countries from text language
         countries_from_language_title = self.extract_countries_from_language(
@@ -134,19 +132,19 @@ class OriginExtractor:
             best_country = self.max_pool_country(
                 countries=countries_from_language)
 
-            updated_receipe = Receipe(
-                title=self.receipe.title, description=self.receipe.description, origin=best_country.lang, wiki_description="", labels=[])
+            updated_recipe = Receipe(
+                title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
             print("Finished Label Extractor!")
             print("##############################################################\n")
 
-            return updated_receipe, best_country.get_wiki_code()
+            return updated_recipe, best_country.get_wiki_code()
 
         # If nothing is found return the standard language (English)
-        updated_receipe = Receipe(
-            title=self.receipe.title, description=self.receipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
+        updated_recipe = Receipe(
+            title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
 
         print("Finished Label Extractor!")
         print("##############################################################\n")
 
-        return updated_receipe, self.ignore_lan.get_wiki_code()
+        return updated_recipe, self.ignore_lan.get_wiki_code()
