@@ -3,7 +3,7 @@ NLP Project for Auto Labeling Receipes
 
 ## Modules
 ### [] Label Extractor
-### [] Origin Extractor
+### [x] Origin Extractor
 ### [] Label Finalizer
 ### [] Wikipedia API Call
 
