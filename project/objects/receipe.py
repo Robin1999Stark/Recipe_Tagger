@@ -1,3 +1,5 @@
+
+
 class Receipe:
     def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[str]):
         self.title = title
@@ -16,6 +18,5 @@ class Receipe:
         print('##################################################')
 
 
-
-
-        
+def print_receipe(receipe: Receipe):
+    receipe.print()
