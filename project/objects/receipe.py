@@ -1,6 +1,6 @@
 
 
-class Receipe:
+class Recipe:
     def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[str]):
         self.title = title
         self.description = description
@@ -18,5 +18,5 @@ class Receipe:
         print('##################################################')
 
 
-def print_receipe(receipe: Receipe):
+def print_receipe(receipe: Recipe):
     receipe.print()
