@@ -216,6 +216,7 @@ class Country:
     }
     norp_country = {
         "English": "England",
+        "British": "England",
         "German": "Germany",
         "French": "France",
         "Spanish": "Spain",
@@ -224,6 +225,7 @@ class Country:
         "Latn": "Portugal",
         "Italian": "Italy",
         "Chinese": "China",
+        "Sichuan": "China",
         "Persian": "Iran",
         "Polish": "Poland",
         "Dutch": "Netherlands",
@@ -239,6 +241,7 @@ class Country:
         "Hungarian": "Hungary",
         "Finnish": "Finland",
         "Hindi": "India",
+        "Indian": "India",
         "Norwegian": "Norway",
         "Catalan": "Catalonia",
         "Thai": "Thailand",
