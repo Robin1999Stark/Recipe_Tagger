@@ -43,7 +43,7 @@ def get_most_common_string(strings) -> str:
     return most_common
 
 
-def extract_countries_from_language(text: str, nlp, standard_lang_id="en"):
+def extract_countries_from_language(text: str, nlp, standard_lang_id="en") -> List[Country]:
 
     multi_word_phrases = extract_multi_word_phrases(text, nlp=nlp)
     countries_conf = list()
@@ -64,7 +64,7 @@ def extract_countries_from_language(text: str, nlp, standard_lang_id="en"):
     return [c[0] for c in countries_conf]
 
 
-def extract_countries(text):
+def extract_countries(text) -> List[Country]:
 
     extracted_countries = find_countries(text=text,
                                          is_ignore_case=True,
@@ -78,7 +78,7 @@ def extract_countries(text):
     return countries
 
 
-def extract_countries_from_norp(text, nlp: Language):
+def extract_countries_from_norp(text, nlp: Language) -> List[Country]:
     doc = nlp(text)
 
     norp_entities = [ent.text for ent in doc.ents if ent.label_ == "NORP"]
