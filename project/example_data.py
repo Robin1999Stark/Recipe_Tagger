@@ -1,32 +1,99 @@
-from objects.receipe import Receipe
+from objects.receipe import Recipe
 
 recipes = [
-    Receipe("Spicy Garlic Shrimp Pasta Italian",
-            """
-    This Spicy Garlic Shrimp Pasta from Italy is a delightful fusion of bold flavors 
-    and comforting textures. Succulent shrimp are sautéed to perfection
-    in a spicy garlic-infused olive oil, creating a mouthwatering base 
-    for the pasta. The dish is then elevated with a medley of vibrant 
-    vegetables and a creamy Rome tomato sauce that perfectly balances the heat. 
-    Tossed with al dente linguine Toscana and garnished with fresh parsley and 
-    grated Parmesan, this dish is a celebration of both simplicity and 
-    sophistication. It's a quick and impressive recipe that will satisfy 
-    your cravings for a flavorful and satisfying meal.")
-    """,
-            "",
-            "",
-            []),
+    Recipe("Sauerbraten",
+           "Sauerbraten is a traditional German pot roast, known for its savory and tangy flavor. The beef is marinated in a mixture of vinegar, water, and various spices for several days, imparting a distinctive taste to the dish. Slow-cooked to perfection, it's typically served with red cabbage and potato dumplings, making it a hearty and flavorful meal.",
+           "",
+           "",
+           []),
 
-    Receipe("Spaghetti Bolognese",
-            """
-    Spaghetti Bolognese is a classic Italian pasta dish.
-    It features a rich and savory meat sauce served over cooked spaghetti.
-    Garnish with grated Parmesan cheese and fresh basil for a delicious 
-    meal.                    
-    """,
-            "",
-            "",
-            [])
+    Recipe("Spaghetti Bolognese",
+           "Spaghetti Bolognese is a classic Italian pasta dish. It features a rich and savory meat sauce served over cooked spaghetti. Garnish with grated Parmesan cheese and fresh basil for a delicious meal.",
+           "",
+           "",
+           []),
+    Recipe("Paella Valenciana",
+           "Paella Valenciana is a classic Spanish dish originating from Valencia. This vibrant and aromatic one-pan rice dish features a delightful combination of saffron-infused rice, rabbit or chicken, green beans, and snails. Cooked in a wide, shallow pan, paella is often prepared and enjoyed as a communal meal, bringing people together to savor the rich flavors of Spanish cuisine.",
+           "",
+           "",
+           []),
+    Recipe("Fish and Chips",
+           "Fish and Chips is an iconic British dish that has stood the test of time. This simple yet satisfying recipe consists of battered and fried fish, usually cod or haddock, served with thick-cut fries. Traditionally enjoyed with malt vinegar and tartar sauce, it's a beloved street food that captures the essence of British culinary tradition.",
+           "",
+           "",
+           []),
+    Recipe("Sushi Rolls",
+           "Sushi Rolls, originating from Japan, are a delicate and artful combination of vinegared rice, fresh fish, and vegetables. Whether it's the classic California Roll, the spicy Tuna Roll, or the elegant Dragon Roll, sushi offers a diverse range of flavors and textures. Served with soy sauce, pickled ginger, and wasabi, sushi is a culinary masterpiece that reflects the precision and craftsmanship of Japanese cuisine.",
+           "",
+           "",
+           []),
+    Recipe("Chicken Tikka Masala",
+           "Chicken Tikka Masala is a popular Indian dish that combines marinated and roasted chicken with a rich and creamy tomato-based curry sauce. The tender chicken pieces are first marinated in a blend of yogurt and spices, then grilled or baked to perfection. The flavorful sauce, infused with aromatic spices like cumin, coriander, and garam masala, makes this dish a comforting and delicious staple in Indian cuisine.",
+           "",
+           "",
+           []),
+    Recipe("Kung Pao Chicken",
+           "Kung Pao Chicken is a classic Chinese stir-fry dish known for its bold flavors and contrasting textures. Tender chicken is stir-fried with peanuts, vegetables, and chili peppers, creating a harmonious blend of spicy, sweet, and savory. The sauce, made with soy sauce, vinegar, and hoisin sauce, adds depth to the dish. Garnished with green onions and sesame seeds, Kung Pao Chicken is a delightful representation of Sichuan cuisine.",
+           "",
+           "",
+           []),
+    Recipe("Coq au Vin",
+           "Coq au Vin is a classic French dish that features chicken cooked in red wine with mushrooms, bacon, and onions. The slow-cooking process infuses the dish with rich flavors, creating a comforting and savory meal. It is often served with mashed potatoes or crusty bread to soak up the delicious sauce.",
+           "",
+           "",
+           []),
+    Recipe("Pad Thai",
+           "Pad Thai is a popular Thai stir-fried noodle dish known for its sweet, sour, and savory flavors. It typically includes rice noodles, shrimp or chicken, bean sprouts, peanuts, and lime. The dish is often garnished with fresh cilantro and a wedge of lime, offering a delightful combination of textures and tastes.",
+           "",
+           "",
+           []),
+    Recipe("Goulash",
+           "Goulash is a hearty Hungarian stew made with tender beef, onions, peppers, and paprika. This comforting dish is slow-cooked to perfection, allowing the flavors to meld together. It is commonly served with egg noodles or crusty bread.",
+           "",
+           "",
+           []),
+    Recipe("Kabsa",
+           "Kabsa is a traditional Arabic rice dish that features spiced rice, meat (often chicken, lamb, or beef), and a mixture of aromatic spices. The dish is cooked with tomatoes, dried lime, and other flavor-enhancing ingredients. Kabsa is a staple in Arabian cuisine and is often served during special occasions.",
+           "",
+           "",
+           []),
+    Recipe("Falafel",
+           "Falafel is a popular Middle Eastern dish made from ground chickpeas or fava beans, herbs, and spices. The mixture is formed into balls or patties and deep-fried until golden brown. Falafel is commonly served in pita bread with tahini sauce, tomatoes, and cucumbers.",
+           "",
+           "",
+           []),
+    Recipe("Pierogi",
+           "Pierogi are traditional Ukrainian dumplings filled with various ingredients, such as potatoes, cheese, meat, or fruit. They are typically boiled and then pan-fried for a crispy exterior. Pierogi can be served as a savory main dish or a sweet dessert, depending on the filling.",
+           "",
+           "",
+           []),
+    Recipe("Shawarma",
+           "Shawarma is a popular Middle Eastern street food made by stacking seasoned meat (often lamb, chicken, or beef) on a vertical rotisserie. The meat is slowly roasted and shaved off to create thin slices. Shawarma is typically served in flatbread with garlic sauce, tahini, and vegetables.",
+           "",
+           "",
+           []),
+    Recipe("Stuffed Grape Leaves",
+           "Stuffed grape leaves, also known as Dolma, are a delicious Mediterranean dish. Grape leaves are filled with a mixture of rice, pine nuts, and herbs, creating a flavorful and aromatic appetizer. They are often served with a side of yogurt sauce.",
+           "",
+           "",
+           []),
+    Recipe("Spicy Tofu Stir-Fry",
+           "Spicy tofu stir-fry is a versatile and flavorful dish inspired by Asian cuisine. Cubes of tofu are stir-fried with a medley of colorful vegetables and tossed in a spicy sauce made with soy sauce, ginger, and garlic. Serve over rice or noodles for a satisfying meal.",
+           "",
+           "",
+           []),
+    Recipe("Mango Salsa",
+           "Mango salsa is a refreshing and tropical condiment that adds a burst of flavor to any dish. It combines diced mango, red onion, cilantro, lime juice, and a hint of jalapeño for a sweet and spicy kick. Enjoy it with grilled chicken, fish, or as a topping for tacos.",
+           "",
+           "",
+           []),
+    Recipe("Teriyaki Salmon",
+           "Teriyaki salmon is a Japanese-inspired dish that features succulent salmon fillets glazed with a sweet and savory teriyaki sauce. Grilled to perfection, the salmon is served with steamed rice and a side of steamed vegetables for a well-balanced and delicious meal.",
+           "",
+           "",
+           [])
+
+
 
 
 ]

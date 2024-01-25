@@ -1,6 +1,6 @@
 
 
-class Receipe:
+class Recipe:
     def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[str]):
         self.title = title
         self.description = description
@@ -9,14 +9,16 @@ class Receipe:
         self.labels = labels
 
     def print(self):
-        print('##################################################')
-        print(f'Receipe: {self.title}')
-        print(f'Description: {self.description}')
-        print(f'Origin: {self.origin}')
-        print(f'Wiki Description: {self.wiki_description}')
-        print(f'Labels: {self.labels}')
-        print('##################################################')
+
+        print('**************************************************')
+        print(f'Recipe Title: {self.title}')
+        print('**************************************************')
+        print(f'Recipe Description: {self.description} \n')
+        print(f'Origin Language: {self.origin} \n')
+        print(f'Wiki Description: {self.wiki_description} \n')
+        print(f'Tags: {self.labels}')
+        print('**************************************************')
 
 
-def print_receipe(receipe: Receipe):
+def print_receipe(receipe: Recipe):
     receipe.print()

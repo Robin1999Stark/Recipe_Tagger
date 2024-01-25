@@ -1,5 +1,5 @@
 from langcodes import Language
-from objects.receipe import Receipe
+from objects.receipe import Recipe
 from modules.origin_extractor import OriginExtractor
 
 
@@ -8,7 +8,7 @@ class RecipeTagger:
         self.nlp = nlp
         self.origin_extractor = OriginExtractor(nlp=self.nlp)
 
-    def run_pipeline(self, recipe: Receipe):
+    def run_pipeline(self, recipe: Recipe):
         # Add Modules here:
 
         # Origin Extractor - Returns the updated receipe and the wikipedia code of

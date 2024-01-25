@@ -5,7 +5,7 @@ from langdetect import detect_langs
 from nltk.tokenize import word_tokenize
 from typing import List
 from country_named_entity_recognition import find_countries
-from objects.receipe import Receipe
+from objects.receipe import Recipe
 from objects.country import Country
 
 
@@ -43,7 +43,7 @@ def get_most_common_string(strings) -> str:
     return most_common
 
 
-def extract_countries_from_language(text: str, nlp, standard_lang_id="en"):
+def extract_countries_from_language(text: str, nlp, standard_lang_id="en") -> List[Country]:
 
     multi_word_phrases = extract_multi_word_phrases(text, nlp=nlp)
     countries_conf = list()
@@ -55,14 +55,16 @@ def extract_countries_from_language(text: str, nlp, standard_lang_id="en"):
             lang = lang_info.lang
             conf = lang_info.prob
             if (conf > 0.9 and lang != standard_lang_id):
-                country_name = Country.languages_countries[Country.langid_languages[lang]][0]
-                country = Country(country_name)
-                countries_conf.append((country, conf))
+                country_name = Country.languages_countries.get(
+                    Country.langid_languages.get(lang, ""), [""])[0]
+                if country_name:
+                    country = Country(country_name)
+                    countries_conf.append((country, conf))
 
     return [c[0] for c in countries_conf]
 
 
-def extract_countries(text):
+def extract_countries(text) -> List[Country]:
 
     extracted_countries = find_countries(text=text,
                                          is_ignore_case=True,
@@ -72,6 +74,20 @@ def extract_countries(text):
     for c in extracted_countries:
         country = Country(c[0].name)
         countries.append(country)
+
+    return countries
+
+
+def extract_countries_from_norp(text, nlp: Language) -> List[Country]:
+    doc = nlp(text)
+
+    norp_entities = [ent.text for ent in doc.ents if ent.label_ == "NORP"]
+
+    countries = list()
+    for norp in norp_entities:
+        country_name = Country.norp_country.get(norp, "")
+        if country_name:
+            countries.append(Country(country_name))
 
     return countries
 
@@ -89,10 +105,11 @@ class OriginExtractor:
         self.nlp = nlp
         self.ignore_lan = ignore_lan
         self.extract_countries = extract_countries
+        self.extract_countries_from_norp = extract_countries_from_norp
         self.extract_countries_from_language = extract_countries_from_language
         self.max_pool_country = max_pool_country
 
-    def run(self, recipe: Receipe) -> Receipe:
+    def run(self, recipe: Recipe) -> Recipe:
 
         print("##############################################################")
         print("LABEL EXTRACTOR")
@@ -111,7 +128,27 @@ class OriginExtractor:
 
             best_country = self.max_pool_country(countries=countries)
 
-            updated_recipe = Receipe(
+            updated_recipe = Recipe(
+                title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
+
+            print("Finished Label Extractor!")
+            print("##############################################################\n")
+
+            return updated_recipe, best_country.get_wiki_code()
+
+        # Extract NORP with NER and get countries from it
+        countries_norp_title = self.extract_countries_from_norp(
+            text=title, nlp=self.nlp)
+        countries_norp_description = self.extract_countries_from_norp(
+            text=description, nlp=self.nlp)
+
+        countries = countries_norp_title + countries_norp_description
+
+        if (len(countries) > 0):
+
+            best_country = self.max_pool_country(countries=countries)
+
+            updated_recipe = Recipe(
                 title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
             print("Finished Label Extractor!")
@@ -132,7 +169,7 @@ class OriginExtractor:
             best_country = self.max_pool_country(
                 countries=countries_from_language)
 
-            updated_recipe = Receipe(
+            updated_recipe = Recipe(
                 title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
             print("Finished Label Extractor!")
@@ -141,7 +178,7 @@ class OriginExtractor:
             return updated_recipe, best_country.get_wiki_code()
 
         # If nothing is found return the standard language (English)
-        updated_recipe = Receipe(
+        updated_recipe = Recipe(
             title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
 
         print("Finished Label Extractor!")
