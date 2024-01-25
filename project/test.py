@@ -2,6 +2,7 @@ from objects.receipe import print_receipe
 from modules.datasetloader import DatasetLoader
 from example_data import recipes_label_extractor
 from modules.label_extractor import LabelExtractor
+
 # Start program from this file
 # Before running this program for the first time call:
 # pipenv run python -m spacy download en_core_web_sm

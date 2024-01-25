@@ -1,7 +1,8 @@
+from objects.recipe_label import RecipeLabel, LabelCategory
 
 
 class Recipe:
-    def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[str]):
+    def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[RecipeLabel]):
         self.title = title
         self.description = description
         self.origin = origin
@@ -16,7 +17,9 @@ class Recipe:
         print(f'Recipe Description: {self.description} \n')
         print(f'Origin Language: {self.origin} \n')
         print(f'Wiki Description: {self.wiki_description} \n')
-        print(f'Tags: {self.labels}')
+        print("Labels:")
+        for label in self.labels:
+            print(label.title + " : " + label.category.name)
         print('**************************************************')
 
 
