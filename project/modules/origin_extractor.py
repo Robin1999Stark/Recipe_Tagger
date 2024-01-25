@@ -112,9 +112,9 @@ class OriginExtractor:
     def run(self, recipe: Recipe) -> Recipe:
 
         print("##############################################################")
-        print("LABEL EXTRACTOR")
+        print("ORIGIN EXTRACTOR")
         print("##############################################################\n")
-        print("Starting Label Extractor... \n")
+        print("Starting Origin Extractor... \n")
 
         title = preprocess_input(recipe.title)
         description = preprocess_input(recipe.description)
@@ -131,7 +131,7 @@ class OriginExtractor:
             updated_recipe = Recipe(
                 title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
-            print("Finished Label Extractor!")
+            print("Finished Origin Extractor!")
             print("##############################################################\n")
 
             return updated_recipe, best_country.get_wiki_code()
@@ -151,7 +151,7 @@ class OriginExtractor:
             updated_recipe = Recipe(
                 title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
-            print("Finished Label Extractor!")
+            print("Finished Origin Extractor!")
             print("##############################################################\n")
 
             return updated_recipe, best_country.get_wiki_code()
@@ -172,7 +172,7 @@ class OriginExtractor:
             updated_recipe = Recipe(
                 title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
 
-            print("Finished Label Extractor!")
+            print("Finished Origin Extractor!")
             print("##############################################################\n")
 
             return updated_recipe, best_country.get_wiki_code()
@@ -181,7 +181,7 @@ class OriginExtractor:
         updated_recipe = Recipe(
             title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
 
-        print("Finished Label Extractor!")
+        print("Finished Origin Extractor!")
         print("##############################################################\n")
 
         return updated_recipe, self.ignore_lan.get_wiki_code()
