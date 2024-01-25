@@ -1,4 +1,4 @@
-# NLP_Receipe_auto_labeling
+# Recipe Auto Tagger
 
 This is a project from the `NLP` course. The use case of this project is to auto tag recipes using 
 NLP techniques like `NER` and other.
