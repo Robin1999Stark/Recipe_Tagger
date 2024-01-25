@@ -19,7 +19,7 @@ class Recipe:
         print(f'Wiki Description: {self.wiki_description} \n')
         print("Labels:")
         for label in self.labels:
-            print(label.title + " : " + label.category.name)
+            print(" - " + label.title + " : " + label.category.name)
         print('**************************************************')
 
 
