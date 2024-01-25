@@ -7,7 +7,14 @@ NLP Project for Auto Labeling Receipes
 ### [] Label Finalizer
 ### [] Wikipedia API Call
 
+## Dependencies
+needs download of en_core_web_sm from spacy
+>> pipenv run python -m spacy download en_core_web_sm
+needs to download the Pipenv from the Pipfile
+>> navigate to `project` folder
+>> run `pipenv install` to install dependencies
+
+
 ## Run
-    >> navigate to `project` folder
-    >> run `pipenv install` to install dependencies
-    >> run `pipenv run python main.py`
+>> navigate to `project` folder
+>> run `pipenv run python main.py`
