@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List
 
 
 class LabelCategory(Enum):
@@ -17,6 +18,12 @@ class RecipeLabel:
         self.title = title
         self.category = category
 
+    def __eq__(self, other):
+        return isinstance(other, RecipeLabel) and self.title == other.title and self.category == other.category
+
+    def __hash__(self):
+        return hash((self.title, self.category))
+
     def print(self):
 
         print('**************************************************')
@@ -27,3 +34,8 @@ class RecipeLabel:
 
 def print_label(label: RecipeLabel):
     label.print()
+
+
+def make_labels_destinct(labels: List[RecipeLabel]) -> List[RecipeLabel]:
+    unique_labels = list(set(labels))
+    return unique_labels
