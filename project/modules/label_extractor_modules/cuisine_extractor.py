@@ -99,12 +99,7 @@ class CuisineExtractor:
         self.max_pool_country = max_pool_country
 
     def run(self, text: str) -> List[RecipeLabel]:
-
         labels = list()
-        print("##############################################################")
-        print("Submodule: CUISINE EXTRACTOR")
-        print("##############################################################\n")
-        print("Starting CUISINE EXTRACTOR... \n")
 
         processed_text = preprocess_input(text=text)
 
@@ -114,6 +109,4 @@ class CuisineExtractor:
 
         labels = labels_from_countries + labels_from_norp
 
-        print("Finished CUISINE EXTRACTOR!")
-        print("##############################################################\n")
         return make_labels_destinct(labels=labels)
