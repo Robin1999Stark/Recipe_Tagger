@@ -3,7 +3,7 @@ from objects.receipe import Recipe
 from modules.label_extractor_modules.food_extractor import FoodExtractor
 from modules.label_extractor_modules.cuisine_extractor import CuisineExtractor
 from objects.country import Country
-from objects.recipe_label import RecipeLabel, LabelCategory
+from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_destinct
 from modules.label_extractor_modules.cooking_method_extractor import CookingMethodExtractor
 from typing import List
 
@@ -38,7 +38,7 @@ class LabelExtractor:
         labels = cooking_method_labels_wiki + \
             cooking_method_labels_title + cooking_method_labels_descr
 
-        return labels
+        return make_labels_destinct(labels)
 
     def run(self, recipe: Recipe) -> Recipe:
         labels = list()

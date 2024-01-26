@@ -42,7 +42,8 @@ class CookingMethodExtractor:
             "broil",
             "stew",
             "stir-fry",
-            "pan-fry"
+            "pan-fry",
+            "season"
         ]
 
     def run(self, text: str) -> List[RecipeLabel]:
@@ -65,9 +66,9 @@ class CookingMethodExtractor:
             stemmed_lemma = self.lemmatizer.lemmatize(token.lemma_.lower())
             if (stemmed_lemma in self.all_cooking_methods):
                 if (
-                    (token.pos_ == "VERB" and token.dep_ in ["ROOT", "conj"]) or
-                    (token.pos_ == "ADJ" and token.dep_ in ["amod"]) or
-                    (token.pos_ == "NOUN" and token.dep_)
+                    (token.pos_ == "VERB") or
+                    (token.pos_ == "ADJ") or
+                    (token.pos_ == "NOUN")
                 ):
                     label = RecipeLabel(
                         stemmed_lemma, LabelCategory.PREPARATIONMETHOD)
