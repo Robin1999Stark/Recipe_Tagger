@@ -1,6 +1,6 @@
 from spacy.language import Language
 from objects.receipe import Recipe
-from modules.label_extractor_modules.meal_type_extractor import MealTypeExtractor
+from project.modules.label_extractor_modules.food_extractor import MealTypeExtractor
 from modules.label_extractor_modules.cuisine_extractor import CuisineExtractor
 from objects.country import Country
 from objects.recipe_label import RecipeLabel, LabelCategory

@@ -15,5 +15,5 @@ class DatasetLoader:
         print("Loading Datasets...")
         nltk.download('punkt')
         nlp = spacy.load("en_core_web_md")
-        print("Dataset Loaded\n")
+        print("Datasets Loaded\n")
         return nlp

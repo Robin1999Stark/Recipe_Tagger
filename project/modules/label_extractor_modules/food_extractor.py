@@ -1,10 +1,11 @@
 from spacy.language import Language
-from objects.receipe import Recipe
 from typing import List
-from objects.recipe_label import RecipeLabel, LabelCategory, print_label
+from objects.recipe_label import RecipeLabel, LabelCategory
+
+# Extracts Food Entities and ingredients
 
 
-class MealTypeExtractor:
+class FoodExtractor:
     def __init__(self, nlp: Language):
         self.nlp = nlp
 
