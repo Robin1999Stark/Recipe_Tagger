@@ -24,7 +24,8 @@ NLP techniques like `NER` and other.
         pipenv install to install dependencies
 
 
-## Split text into one sentence per line. Is needed for the Tecoholic anotator: https://tecoholic.github.io/ner-annotator/
+## Split text 
+Split text into one sentence per line. Is needed for the Tecoholic anotator: https://tecoholic.github.io/ner-annotator/
   - navigate to `label_extractor_model` folder and run:
     
         pipenv run python create_all_recipes.py
@@ -46,6 +47,7 @@ NLP techniques like `NER` and other.
 
 ## Use Model
   - After training the model, the best performing model can be found in the `output` folder und `mode-best`
+  - the `output` folder is added to gitignore. Models are too big for commit.
 
 
 ## Run
