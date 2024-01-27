@@ -24,7 +24,7 @@ class FoodExtractor:
             for label in ent_labels:
                 if (label.label_ != "OTHER"):
                     recipe_label = RecipeLabel(
-                        str(label.ents), label.label_)
+                        str(label), label.label_)
                     labels.append(recipe_label)
 
         print("Finished MEAL TYPE EXTRACTOR!")
