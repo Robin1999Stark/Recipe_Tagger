@@ -1,10 +1,10 @@
-from objects import country
+from objects import Country
 
 
 def finalizeTags(recipe):
     for label in recipe.labels:
-        for key in world_countries:
-            if label in world_countries[key]:
+        for key in Country.world_countries:
+            if label in Country.world_countries[key]:
                 recipe.labels.append(key)
     recipe.labels = list(set(recipe.labels))  # removes duplicates
     if 'MEAT' not in recipe.labels:
