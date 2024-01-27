@@ -7,10 +7,11 @@ from modules.translator import WikiTranslator
 
 
 class RecipeTagger:
-    def __init__(self, nlp: Language):
+    def __init__(self, nlp: Language, nlp_model: Language):
         self.nlp = nlp
+        self.nlp_model = nlp_model
         self.origin_extractor = OriginExtractor(nlp=self.nlp)
-        self.label_extractor = LabelExtractor(nlp=nlp)
+        self.label_extractor = LabelExtractor(nlp=nlp, nlp_model=nlp_model)
         self.wiki_api = WikiApi()
         self.wiki_translator = WikiTranslator()
 
@@ -25,7 +26,7 @@ class RecipeTagger:
             recipe=updated_receipe, wiki_code=wiki_code)
 
         updated_receipe = self.wiki_translator.run(
-            recipe=recipe, wiki_code=wiki_code)
+            recipe=updated_receipe, wiki_code=wiki_code)
 
         updated_receipe = self.label_extractor.run(recipe=updated_receipe)
         # TODO: Label Finalizer

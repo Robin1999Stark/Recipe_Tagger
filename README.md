@@ -38,6 +38,14 @@ Split text into one sentence per line. Is needed for the Tecoholic anotator: htt
     
     This command creates the `train.spacy` and the `dev.spacy` files that are the splitted train and test data for the model in spacy format.
 
+## Update Config
+  - navigate to `label_extractor_model` folder and run:
+    
+        pipenv run python -m spacy init fill-config base_config.cfg config.cfg
+    
+    This command creates the `config.spacy` from the `base_config.spacy` file. Only use this if there is a need to update the config.
+
+
 ## Train Model
   - navigate to `label_extractor_model` folder and run:
     

@@ -3,12 +3,19 @@ from typing import List
 
 
 class LabelCategory(Enum):
-    INGREDIENT = "in"
-    CUISINE = "cu"
-    PREPARATIONMETHOD = "pm"
-    MEALTYPE = "mt"
-    DIETARYPREFERENCE = "dp"
-    ATTRIBUTE = "at"
+    CUISINE = "CUISINE"
+    PREPARATIONMETHOD = "PREPARATIONMETHOD"
+    NAMEOFDISH = "NAMEOFDISH"
+    DIETARYPREFERENCE = "DIETARYPREFERENCE"
+    ATTRIBUTE = "ATTRIBUTE"
+    MEAT = 'MEAT'
+    NUT = 'NUT'
+    SWEETSANDSUGAR = 'SWEETSANDSUGAR'
+    FRUITS = 'FRUITS'
+    SEAFOOD = 'SEAFOOD'
+    STAMPLEFOOD = 'STAMPLEFOOD'
+    VEGETABLESHERBS = 'VEGETABLESHERBS'
+    ANIMAL = 'ANIMAL'
 
 
 class AllLabels(Enum):
@@ -23,7 +30,7 @@ class AllLabels(Enum):
 
 
 class RecipeLabel:
-    def __init__(self, title: str, category: LabelCategory):
+    def __init__(self, title: str, category: LabelCategory | AllLabels):
         self.title = title
         self.category = category
 
