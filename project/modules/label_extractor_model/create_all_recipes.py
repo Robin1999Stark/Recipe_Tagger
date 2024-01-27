@@ -3,7 +3,6 @@ import os
 import nltk
 import re
 
-
 nltk.download('punkt')
 
 
@@ -25,9 +24,8 @@ def process_files(input_folder, output_file):
 
 
 if __name__ == "__main__":
-    # Replace with the path to your input folder
+
     input_folder_path = "./files"
-    # Replace with the desired output file path
     output_file_path = "all_recipes.txt"
 
     process_files(input_folder_path, output_file_path)
