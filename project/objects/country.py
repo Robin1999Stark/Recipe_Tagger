@@ -282,5 +282,11 @@ class Country:
         self.lang = Country.countries_languages[name]
         self.wiki_code = Country.languages_wiki[self.lang]
 
+    def __eq__(self, other):
+        return isinstance(other, Country) and self.name == other.name
+
+    def __hash__(self):
+        return hash((self.name, self.lang, self.wiki_code))
+
     def get_wiki_code(self):
         Country.languages_wiki[self.lang]

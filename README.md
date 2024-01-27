@@ -7,6 +7,7 @@ NLP techniques like `NER` and other.
 - [ ] **Label Extractor**
 - [x] **Origin Extractor**
 - [ ] **Label Finalizer**
+- [ ] **Translator To English**
 - [ ] **Wikipedia API Call**
 
 ## Dependencies

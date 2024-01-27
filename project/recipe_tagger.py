@@ -1,14 +1,17 @@
 from langcodes import Language
 from objects.receipe import Recipe
-from modules.origin_extractor import OriginExtractor
+from modules.origin_extractor import OriginExtror
 import wikipediaapi
 from translate import Translator
+from modules.label_extractor import LabelExtractor
+
 
 
 class RecipeTagger:
     def __init__(self, nlp: Language):
         self.nlp = nlp
         self.origin_extractor = OriginExtractor(nlp=self.nlp)
+        self.label_extractor = LabelExtractor(nlp=nlp)
 
     def run_pipeline(self, recipe: Recipe):
         # Add Modules here:
@@ -22,7 +25,7 @@ class RecipeTagger:
         wiki_article = translate_to_english(wiki_article, wiki_code)
 
         # TODO: Label Extractor
-
+        updated_receipe = self.label_extractor.run(recipe=updated_receipe)
         # TODO: Label Finalizer
 
         recipe = updated_receipe

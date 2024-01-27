@@ -1,15 +1,12 @@
 from spacy.language import Language
-from objects.receipe import Recipe
 from typing import List
-from objects.recipe_label import RecipeLabel, LabelCategory, print_label, make_labels_destinct
+from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_destinct
 from spacy.language import Language
 from collections import Counter
 import re
-from langdetect import detect_langs
 from nltk.tokenize import word_tokenize
 from typing import List
 from country_named_entity_recognition import find_countries
-from objects.receipe import Recipe
 from objects.country import Country
 
 
@@ -102,12 +99,7 @@ class CuisineExtractor:
         self.max_pool_country = max_pool_country
 
     def run(self, text: str) -> List[RecipeLabel]:
-
         labels = list()
-        print("##############################################################")
-        print("Submodule: CUISINE EXTRACTOR")
-        print("##############################################################\n")
-        print("Starting CUISINE EXTRACTOR... \n")
 
         processed_text = preprocess_input(text=text)
 
@@ -117,6 +109,4 @@ class CuisineExtractor:
 
         labels = labels_from_countries + labels_from_norp
 
-        print("Finished CUISINE EXTRACTOR!")
-        print("##############################################################\n")
         return make_labels_destinct(labels=labels)
