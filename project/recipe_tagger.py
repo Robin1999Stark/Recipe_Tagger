@@ -28,6 +28,9 @@ class RecipeTagger:
         updated_receipe = self.wiki_translator.run(
             recipe=updated_receipe, wiki_code=wiki_code)
 
+        # change
+        updated_receipe.wiki_description = recipe.description
+
         updated_receipe = self.label_extractor.run(recipe=updated_receipe)
         # TODO: Label Finalizer
 
