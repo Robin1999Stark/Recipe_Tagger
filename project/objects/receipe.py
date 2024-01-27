@@ -15,7 +15,7 @@ class Recipe:
         print(f'Recipe Title: {self.title}')
         print('**************************************************')
         print(f'Recipe Description: {self.description} \n')
-        print(f'Origin Language: {self.origin} \n')
+        print(f'Wikipedia Language: {self.origin} \n')
         print(f'Wiki Description: {self.wiki_description} \n')
         print("Labels:")
         for label in self.labels:

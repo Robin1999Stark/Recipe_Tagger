@@ -134,7 +134,7 @@ class OriginExtractor:
             print("Finished Origin Extractor!")
             print("##############################################################\n")
 
-            return updated_recipe, best_country.get_wiki_code()
+            return updated_recipe, best_country.wiki_code
 
         # Extract NORP with NER and get countries from it
         countries_norp_title = self.extract_countries_from_norp(
@@ -154,7 +154,16 @@ class OriginExtractor:
             print("Finished Origin Extractor!")
             print("##############################################################\n")
 
-            return updated_recipe, best_country.get_wiki_code()
+            return updated_recipe, best_country.wiki_code
+
+        # If nothing is found return the standard language (English)
+        updated_recipe = Recipe(
+            title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
+
+        print("Finished Origin Extractor!")
+        print("##############################################################\n")
+
+        return updated_recipe, self.ignore_lan.wiki_code
 
         # Extract countries from text language
         countries_from_language_title = self.extract_countries_from_language(
@@ -175,13 +184,4 @@ class OriginExtractor:
             print("Finished Origin Extractor!")
             print("##############################################################\n")
 
-            return updated_recipe, best_country.get_wiki_code()
-
-        # If nothing is found return the standard language (English)
-        updated_recipe = Recipe(
-            title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
-
-        print("Finished Origin Extractor!")
-        print("##############################################################\n")
-
-        return updated_recipe, self.ignore_lan.get_wiki_code()
+            return updated_recipe, best_country.wiki_code

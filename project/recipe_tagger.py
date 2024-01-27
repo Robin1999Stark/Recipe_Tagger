@@ -1,10 +1,9 @@
 from langcodes import Language
 from objects.receipe import Recipe
-from modules.origin_extractor import OriginExtror
-import wikipediaapi
+from modules.origin_extractor import OriginExtractor
+from wikipedia import wikipedia, exceptions as wiki_exceptions
 from translate import Translator
 from modules.label_extractor import LabelExtractor
-
 
 
 class RecipeTagger:
@@ -20,26 +19,30 @@ class RecipeTagger:
         # the origin language
         updated_receipe, wiki_code = self.origin_extractor.run(recipe=recipe)
 
-        wiki_article = get_wikipedia_article(wiki_code, updated_receipe)
+        wiki_article = get_wikipedia_article(wiki_code, updated_receipe.title)
 
         wiki_article = translate_to_english(wiki_article, wiki_code)
-
+        updated_receipe = Recipe(title=updated_receipe.title, description=updated_receipe.description,
+                                 origin=updated_receipe.origin, wiki_description=wiki_article, labels=updated_receipe.labels)
         # TODO: Label Extractor
         updated_receipe = self.label_extractor.run(recipe=updated_receipe)
         # TODO: Label Finalizer
 
-        recipe = updated_receipe
-        return updated_receipe + wiki_article
+        return updated_receipe
 
 
 def get_wikipedia_article(language, term):
-    wiki_wiki = wikipediaapi.Wikipedia('NLP_Test_Project (andreas.lieber@uni-a.de)', language)
-    page_py = wiki_wiki.page(term)
+    wikipedia.set_lang(language)
+    try:
+        search_array = wikipedia.search(term)
+        if (len(search_array) > 0):
+            summary = wikipedia.summary(search_array[0])
+            return summary
+        return ""
 
-    if not page_py.exists():
-        return f"No Wikipedia article found for '{term}' in {language}."
-
-    return page_py.text
+    except wiki_exceptions.PageError as e:
+        print(f"PageError: {e}")
+        return ""
 
 
 def translate_to_english(text, source_language):
