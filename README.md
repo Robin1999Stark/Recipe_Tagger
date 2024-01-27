@@ -7,8 +7,8 @@ NLP techniques like `NER` and other.
 - [ ] **Label Extractor**
 - [x] **Origin Extractor**
 - [ ] **Label Finalizer**
-- [ ] **Translator To English**
-- [ ] **Wikipedia API Call**
+- [x] **Translator To English**
+- [x] **Wikipedia API Call**
 
 ## Dependencies
   - needs download of en_core_web_md from spacy
