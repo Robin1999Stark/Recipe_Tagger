@@ -6,7 +6,7 @@ NLP techniques like `NER` and other.
 ## Modules
 - [ ] **Label Extractor**
 - [x] **Origin Extractor**
-- [ ] **Label Finalizer**
+- [x] **Label Finalizer**
 - [x] **Translator To English**
 - [x] **Wikipedia API Call**
 

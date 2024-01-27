@@ -3,14 +3,23 @@ from typing import List
 
 
 class LabelCategory(Enum):
-
     INGREDIENT = "in"
     CUISINE = "cu"
     PREPARATIONMETHOD = "pm"
     MEALTYPE = "mt"
     DIETARYPREFERENCE = "dp"
-    OCCASION = "oc"
     ATTRIBUTE = "at"
+
+
+class AllLabels(Enum):
+    MEAT = 'MEAT'
+    NUT = 'NUT'
+    SWEETSANDSUGAR = 'SWEETSANDSUGAR'
+    FRUITS = 'FRUITS'
+    SEAFOOD = 'SEAFOOD'
+    STAMPLEFOOD = 'STAMPLEFOOD'
+    VEGETABLESHERBS = 'VEGETABLESHERBS'
+    ANIMAL = 'ANIMAL'
 
 
 class RecipeLabel:
@@ -25,7 +34,6 @@ class RecipeLabel:
         return hash((self.title, self.category))
 
     def print(self):
-
         print('**************************************************')
         print(f'Recipe Label: {self.title}')
         print(f'Category: {self.category} \n')
