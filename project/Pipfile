@@ -11,6 +11,7 @@ nltk = "*"
 langdetect = "*"
 country-named-entity-recognition = "*"
 pandas = "*"
+spacy-transformers = "*"
 
 [dev-packages]
 

@@ -7,6 +7,7 @@ from tqdm import tqdm
 import spacy
 from io import TextIOWrapper
 from sklearn.model_selection import train_test_split
+from spacy.cli.init_config import init_config
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(current_directory)

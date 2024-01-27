@@ -149,7 +149,7 @@ class OriginExtractor:
             best_country = self.max_pool_country(countries=countries)
 
             updated_recipe = Recipe(
-                title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description="", labels=[])
+                title=recipe.title, description=recipe.description, origin=best_country.lang, wiki_description=recipe.wiki_description, labels=recipe.labels)
 
             print("Finished Origin Extractor!")
             print("##############################################################\n")
@@ -158,7 +158,7 @@ class OriginExtractor:
 
         # If nothing is found return the standard language (English)
         updated_recipe = Recipe(
-            title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description="", labels=[])
+            title=recipe.title, description=recipe.description, origin=self.ignore_lan.lang, wiki_description=recipe.wiki_description, labels=recipe.labels)
 
         print("Finished Origin Extractor!")
         print("##############################################################\n")
