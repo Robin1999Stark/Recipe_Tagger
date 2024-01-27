@@ -10,6 +10,7 @@ langid = "*"
 nltk = "*"
 langdetect = "*"
 country-named-entity-recognition = "*"
+pandas = "*"
 
 [dev-packages]
 
