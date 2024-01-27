@@ -11,9 +11,9 @@ from recipe_tagger import RecipeTagger
 if __name__ == '__main__':
 
     dl = DatasetLoader()
-    nlp = dl.load_data()
+    nlp, nlp_model = dl.load_data()
 
-    tagger = RecipeTagger(nlp=nlp)
+    tagger = RecipeTagger(nlp=nlp, nlp_model=nlp_model)
 
     for recipe in recipes:
         updated_receipe = tagger.run_pipeline(recipe=recipe)

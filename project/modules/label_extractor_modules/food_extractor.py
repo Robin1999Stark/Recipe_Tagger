@@ -6,9 +6,9 @@ import spacy
 
 
 class FoodExtractor:
-    def __init__(self, nlp: Language):
+    def __init__(self, nlp: Language, nlp_model: Language):
         self.nlp = nlp
-        self.nlp_model = spacy.load(r"./output/model-best")
+        self.nlp_model = nlp_model
 
     def run(self, text: str) -> List[RecipeLabel]:
 
@@ -24,7 +24,7 @@ class FoodExtractor:
             for label in ent_labels:
                 if (label.label_ != "OTHER"):
                     recipe_label = RecipeLabel(
-                        label.label_, LabelCategory.INGREDIENT)
+                        str(label.ents), label.label_)
                     labels.append(recipe_label)
 
         print("Finished MEAL TYPE EXTRACTOR!")

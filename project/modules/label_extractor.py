@@ -9,9 +9,10 @@ from typing import List
 
 
 class LabelExtractor:
-    def __init__(self, nlp: Language):
+    def __init__(self, nlp: Language, nlp_model: Language):
         self.nlp = nlp
-        self.meal_type_extractor = FoodExtractor(nlp=nlp)
+        self.nlp_model = nlp_model
+        self.food_extractor = FoodExtractor(nlp=nlp, nlp_model=nlp_model)
         self.cuisine_extractor = CuisineExtractor(nlp=nlp)
         self.cooking_method_extractor = CookingMethodExtractor(nlp=nlp)
 
@@ -47,7 +48,7 @@ class LabelExtractor:
         print("##############################################################\n")
         print("Starting Label Extractor... \n")
 
-        labels = labels + self.meal_type_extractor.run("test")
+        labels = labels + self.food_extractor.run(recipe.wiki_description)
 
         labels = labels + self.extract_cooking_method(recipe=recipe)
 

@@ -7,10 +7,11 @@ from modules.translator import WikiTranslator
 
 
 class RecipeTagger:
-    def __init__(self, nlp: Language):
+    def __init__(self, nlp: Language, nlp_model: Language):
         self.nlp = nlp
+        self.nlp_model = nlp_model
         self.origin_extractor = OriginExtractor(nlp=self.nlp)
-        self.label_extractor = LabelExtractor(nlp=nlp)
+        self.label_extractor = LabelExtractor(nlp=nlp, nlp_model=nlp_model)
         self.wiki_api = WikiApi()
         self.wiki_translator = WikiTranslator()
 
