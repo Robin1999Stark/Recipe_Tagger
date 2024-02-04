@@ -12,6 +12,8 @@ langdetect = "*"
 country-named-entity-recognition = "*"
 pandas = "*"
 spacy-transformers = "*"
+wikipedia = "*"
+translate = "*"
 
 [dev-packages]
 

@@ -7,6 +7,9 @@ from typing import List
 from country_named_entity_recognition import find_countries
 from objects.receipe import Recipe
 from objects.country import Country
+from eval_data import title_origin, TitleOrg
+from objects.eval import EvalData
+from metrics.metrics import accuracy_score, precision_score
 
 
 def extract_multi_word_phrases(sentence, nlp):
@@ -71,9 +74,12 @@ def extract_countries(text) -> List[Country]:
                                          is_georgia_probably_the_country=True)
 
     countries = list()
+
     for c in extracted_countries:
-        country = Country(c[0].name)
-        countries.append(country)
+        country_name = c[0].name
+        if country_name in Country.countries_languages:
+            country = Country(c[0].name)
+            countries.append(country)
 
     return countries
 
@@ -108,6 +114,22 @@ class OriginExtractor:
         self.extract_countries_from_norp = extract_countries_from_norp
         self.extract_countries_from_language = extract_countries_from_language
         self.max_pool_country = max_pool_country
+
+    def eval(self, test_data: List[TitleOrg]) -> EvalData:
+        y_true = []
+        y_pred = []
+        for td in test_data:
+            y_true.append(td.origin)
+            return_recipe = self.run(
+                recipe=Recipe(td.title, td.description))[0]
+            y_pred.append(return_recipe.origin)
+
+        ac = accuracy_score(y_pos=y_true, y_pred=y_pred)
+        pre = precision_score(y_pos=y_true, y_pred=y_pred)
+        rec = 0
+        f1 = 0
+
+        return EvalData("Origin Extractor", accuracy=ac, precision=pre, recall=rec, f1_score=f1)
 
     def run(self, recipe: Recipe) -> Recipe:
 

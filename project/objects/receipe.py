@@ -2,7 +2,7 @@ from objects.recipe_label import RecipeLabel, LabelCategory
 
 
 class Recipe:
-    def __init__(self, title: str, description: str, origin: str, wiki_description: str, labels: list[RecipeLabel]):
+    def __init__(self, title: str, description: str, origin: str = "", wiki_description: str = "", labels: list[RecipeLabel] = []):
         self.title = title
         self.description = description
         self.origin = origin
