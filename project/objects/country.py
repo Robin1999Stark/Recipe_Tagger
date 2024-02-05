@@ -312,8 +312,17 @@ class Country:
 
     def __init__(self, name: str):
         self.name = name
+        # init lang
         self.lang = Country.countries_languages[name]
+        # make lang unique
+        self.lang = self.get_unique_lang()
         self.wiki_code = Country.languages_wiki[self.lang]
+
+    def get_unique_lang(self) -> str:
+        # because there are synonyms in the languages like british, english, etc., the languages can be
+        # counted as different. Therefore a double mapping makes the language unique
+        country = Country.languages_countries[self.lang][0]
+        return Country.countries_languages[country]
 
     def __eq__(self, other):
         return isinstance(other, Country) and self.name == other.name

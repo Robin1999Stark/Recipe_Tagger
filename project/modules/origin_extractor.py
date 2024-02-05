@@ -9,7 +9,7 @@ from objects.receipe import Recipe
 from objects.country import Country
 from eval_data import title_origin, TitleOrg
 from objects.eval import EvalData
-from metrics.metrics import accuracy_score, precision_score
+from metrics.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
 def extract_multi_word_phrases(sentence, nlp):
@@ -115,7 +115,7 @@ class OriginExtractor:
         self.extract_countries_from_language = extract_countries_from_language
         self.max_pool_country = max_pool_country
 
-    def eval(self, test_data: List[TitleOrg]) -> EvalData:
+    def eval(self, test_data: List[Recipe]) -> EvalData:
         y_true = []
         y_pred = []
         for td in test_data:
@@ -126,8 +126,8 @@ class OriginExtractor:
 
         ac = accuracy_score(y_pos=y_true, y_pred=y_pred)
         pre = precision_score(y_pos=y_true, y_pred=y_pred)
-        rec = 0
-        f1 = 0
+        rec = recall_score(y_pos=y_true, y_pred=y_pred)
+        f1 = f1_score(y_pos=y_true, y_pred=y_pred)
 
         return EvalData("Origin Extractor", accuracy=ac, precision=pre, recall=rec, f1_score=f1)
 

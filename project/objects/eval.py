@@ -14,7 +14,7 @@ class PREvalData():
 
 
 class EvalData():
-    def __init__(self, title: str, accuracy: float, precision: PREvalData, recall: PREvalData, f1_score: float):
+    def __init__(self, title: str, accuracy: float, precision: PREvalData, recall: PREvalData, f1_score: PREvalData):
         self.title = title
         self.accuracy = accuracy
         self.precision = precision
@@ -28,4 +28,5 @@ class EvalData():
         self.precision.print()
         print(f"Recall: ")
         self.recall.print()
-        print(f"f1_score: {self.f1_score}")
+        print(f"f1_score: ")
+        self.f1_score.print()
