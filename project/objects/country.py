@@ -13,9 +13,14 @@ def create_languages_countries(countries_languages):
 class Country:
     languages_wiki = {
         "English": "en",
+        "British": "en",
+        "Scottish": "en",
+        "American": "en",
         "German": "de",
+        "Austrian": "de",
         "French": "fr",
         "Spanish": "es",
+        "Mexican": "es",
         "Japanese": "ja",
         "Russian": "ru",
         "Latn": "pt",
@@ -162,10 +167,12 @@ class Country:
     countries_languages = {
         "England": "English",
         "Germany": "German",
+        "Austria": "Austrian",
         "France": "French",
         "Spain": "Spanish",
         "Japan": "Japanese",
         "Russia": "Russian",
+        "Mexico": "Mexican",
         "Portugal": "Latn",
         "Italy": "Italian",
         "China": "Chinese",
@@ -214,8 +221,11 @@ class Country:
     norp_country = {
         "English": "England",
         "British": "England",
+        "Scottish": "Scottland",
         "German": "Germany",
+        "Austrian": "Austria",
         "French": "France",
+        "Mexican": "Mexico",
         "Spanish": "Spain",
         "Japanese": "Japan",
         "Russian": "Russia",
@@ -324,11 +334,17 @@ class Country:
         country = Country.languages_countries[self.lang][0]
         return Country.countries_languages[country]
 
+    def get_unique_lang_(lang: str) -> str:
+        # because there are synonyms in the languages like british, english, etc., the languages can be
+        # counted as different. Therefore a double mapping makes the language unique
+        country: str = Country.languages_countries[lang][0]
+        return Country.countries_languages[country]
+
     def __eq__(self, other):
         return isinstance(other, Country) and self.name == other.name
 
     def __hash__(self):
-        return hash((self.name, self.lang, self.wiki_code))
+        return hash((self.name, self.lang))
 
     def get_wiki_code(self):
         Country.languages_wiki[self.lang]

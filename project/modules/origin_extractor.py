@@ -119,7 +119,8 @@ class OriginExtractor:
         y_true = []
         y_pred = []
         for td in test_data:
-            y_true.append(td.origin)
+            lang = Country.get_unique_lang_(td.origin)
+            y_true.append(lang)
             return_recipe = self.run(
                 recipe=Recipe(td.title, td.description))[0]
             y_pred.append(return_recipe.origin)
