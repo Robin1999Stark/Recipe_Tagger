@@ -1,6 +1,6 @@
 from spacy.language import Language
 from typing import List
-from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_destinct
+from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_distinct
 from nltk.stem import WordNetLemmatizer
 
 # Extracts The Cooking Method of different dishes
@@ -74,4 +74,4 @@ class CookingMethodExtractor:
                         stemmed_lemma, LabelCategory.PREPARATIONMETHOD)
                     labels.append(label)
 
-        return make_labels_destinct(labels=labels)
+        return make_labels_distinct(labels=labels)

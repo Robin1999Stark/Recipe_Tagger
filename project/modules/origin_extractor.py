@@ -7,25 +7,22 @@ from typing import List
 from country_named_entity_recognition import find_countries
 from objects.receipe import Recipe
 from objects.country import Country
+from objects.eval import EvalData
+from metrics.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
-def extract_multi_word_phrases(sentence, nlp):
+def extract_multi_word_phrases(sentence: str, nlp: Language):
     # Process the input sentence using spaCy
     doc = nlp(sentence)
 
-    # Extract noun chunks (multi-word phrases)
     phrases = [chunk.text for chunk in doc.noun_chunks]
 
     return phrases
 
 
-def remove_whitespace_sequences(text):
-    # Define a regular expression pattern for matching whitespace sequences
+def remove_whitespace_sequences(text: str):
     whitespace_pattern = re.compile(r'\s+')
-
-    # Use sub() to replace matched sequences with a single space
     cleaned_text = re.sub(whitespace_pattern, ' ', text)
-
     return cleaned_text
 
 
@@ -71,9 +68,12 @@ def extract_countries(text) -> List[Country]:
                                          is_georgia_probably_the_country=True)
 
     countries = list()
+
     for c in extracted_countries:
-        country = Country(c[0].name)
-        countries.append(country)
+        country_name = c[0].name
+        if country_name in Country.countries_languages:
+            country = Country(c[0].name)
+            countries.append(country)
 
     return countries
 
@@ -108,6 +108,23 @@ class OriginExtractor:
         self.extract_countries_from_norp = extract_countries_from_norp
         self.extract_countries_from_language = extract_countries_from_language
         self.max_pool_country = max_pool_country
+
+    def eval(self, test_data: List[Recipe]) -> EvalData:
+        y_true = []
+        y_pred = []
+        for td in test_data:
+            lang = Country.get_unique_lang_(td.origin)
+            y_true.append(lang)
+            return_recipe = self.run(
+                recipe=Recipe(td.title, td.description))[0]
+            y_pred.append(return_recipe.origin)
+
+        ac = accuracy_score(y_pos=y_true, y_pred=y_pred)
+        pre = precision_score(y_pos=y_true, y_pred=y_pred)
+        rec = recall_score(y_pos=y_true, y_pred=y_pred)
+        f1 = f1_score(y_pos=y_true, y_pred=y_pred)
+
+        return EvalData("Origin Extractor", accuracy=ac, precision=pre, recall=rec, f1_score=f1)
 
     def run(self, recipe: Recipe) -> Recipe:
 

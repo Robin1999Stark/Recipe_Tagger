@@ -18,19 +18,8 @@ class LabelCategory(Enum):
     ANIMAL = 'ANIMAL'
 
 
-class AllLabels(Enum):
-    MEAT = 'MEAT'
-    NUT = 'NUT'
-    SWEETSANDSUGAR = 'SWEETSANDSUGAR'
-    FRUITS = 'FRUITS'
-    SEAFOOD = 'SEAFOOD'
-    STAMPLEFOOD = 'STAMPLEFOOD'
-    VEGETABLESHERBS = 'VEGETABLESHERBS'
-    ANIMAL = 'ANIMAL'
-
-
 class RecipeLabel:
-    def __init__(self, title: str, category: LabelCategory | AllLabels):
+    def __init__(self, title: str, category: LabelCategory):
         self.title = title
         self.category = category
 
@@ -51,6 +40,6 @@ def print_label(label: RecipeLabel):
     label.print()
 
 
-def make_labels_destinct(labels: List[RecipeLabel]) -> List[RecipeLabel]:
+def make_labels_distinct(labels: List[RecipeLabel]) -> List[RecipeLabel]:
     unique_labels = list(set(labels))
     return unique_labels

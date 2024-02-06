@@ -22,9 +22,11 @@ class FoodExtractor:
             doc = self.nlp_model(text=text)
             ent_labels = doc.ents
             for label in ent_labels:
-                if (label.label_ != "OTHER"):
+                if (label.label_ in [cat.value for cat in LabelCategory]):
+                    label_cat: LabelCategory = LabelCategory.__members__.get(
+                        label.label_)
                     recipe_label = RecipeLabel(
-                        str(label), label.label_)
+                        str(label), label_cat)
                     labels.append(recipe_label)
 
         print("Finished MEAL TYPE EXTRACTOR!")
