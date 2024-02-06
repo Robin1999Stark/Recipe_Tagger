@@ -2,8 +2,7 @@ from spacy.language import Language
 from objects.receipe import Recipe
 from modules.label_extractor_modules.food_extractor import FoodExtractor
 from modules.label_extractor_modules.cuisine_extractor import CuisineExtractor
-from objects.country import Country
-from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_destinct
+from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_distinct
 from modules.label_extractor_modules.cooking_method_extractor import CookingMethodExtractor
 from typing import List
 
@@ -39,7 +38,11 @@ class LabelExtractor:
         labels = cooking_method_labels_wiki + \
             cooking_method_labels_title + cooking_method_labels_descr
 
-        return make_labels_destinct(labels)
+        return make_labels_distinct(labels)
+
+    def extract_meal_data(self, recipe: Recipe) -> List[RecipeLabel]:
+        labels = self.food_extractor.run(recipe.wiki_description)
+        return make_labels_distinct(labels=labels)
 
     def run(self, recipe: Recipe) -> Recipe:
         labels = list()
@@ -48,7 +51,7 @@ class LabelExtractor:
         print("##############################################################\n")
         print("Starting Label Extractor... \n")
 
-        labels = labels + self.food_extractor.run(recipe.wiki_description)
+        labels = labels + self.extract_meal_data(recipe=recipe)
 
         labels = labels + self.extract_cooking_method(recipe=recipe)
 

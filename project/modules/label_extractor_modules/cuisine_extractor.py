@@ -1,6 +1,6 @@
 from spacy.language import Language
 from typing import List
-from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_destinct
+from objects.recipe_label import RecipeLabel, LabelCategory, make_labels_distinct
 from spacy.language import Language
 from collections import Counter
 import re
@@ -109,4 +109,4 @@ class CuisineExtractor:
 
         labels = labels_from_countries + labels_from_norp
 
-        return make_labels_destinct(labels=labels)
+        return make_labels_distinct(labels=labels)

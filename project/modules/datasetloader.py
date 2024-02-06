@@ -22,8 +22,8 @@ class DatasetLoader:
         nltk.download('punkt')
         nltk.download('wordnet')
         nlp = spacy.load("en_core_web_md")
-        nlp_model = spacy.load("en_core_web_md")
-        # nlp_model = spacy.load(
-        #    r"./label_extractor_model/output/model-best")
+        # nlp_model = spacy.load("en_core_web_md")
+        nlp_model = spacy.load(
+            r"./label_extractor_model/output/model-best")
         print("Datasets Loaded\n")
         return nlp, nlp_model

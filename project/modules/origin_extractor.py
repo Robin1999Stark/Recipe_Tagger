@@ -7,28 +7,22 @@ from typing import List
 from country_named_entity_recognition import find_countries
 from objects.receipe import Recipe
 from objects.country import Country
-from eval_data import title_origin, TitleOrg
 from objects.eval import EvalData
 from metrics.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
-def extract_multi_word_phrases(sentence, nlp):
+def extract_multi_word_phrases(sentence: str, nlp: Language):
     # Process the input sentence using spaCy
     doc = nlp(sentence)
 
-    # Extract noun chunks (multi-word phrases)
     phrases = [chunk.text for chunk in doc.noun_chunks]
 
     return phrases
 
 
-def remove_whitespace_sequences(text):
-    # Define a regular expression pattern for matching whitespace sequences
+def remove_whitespace_sequences(text: str):
     whitespace_pattern = re.compile(r'\s+')
-
-    # Use sub() to replace matched sequences with a single space
     cleaned_text = re.sub(whitespace_pattern, ' ', text)
-
     return cleaned_text
 
 
