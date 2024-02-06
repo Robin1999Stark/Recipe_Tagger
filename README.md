@@ -4,7 +4,7 @@ This is a project from the `NLP` course. The use case of this project is to auto
 NLP techniques like `NER` and other.
 
 ## Modules
-- [ ] **Label Extractor**
+- [x] **Label Extractor**
 - [x] **Origin Extractor**
 - [x] **Label Finalizer**
 - [x] **Translator To English**
