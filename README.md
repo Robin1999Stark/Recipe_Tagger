@@ -1,9 +1,12 @@
 # Recipe Auto Tagger
 
-This is a project from the `NLP` course. The use case of this project is to auto tag recipes using 
-NLP techniques like `NER` and other.
+This project was created in my universities `NLP` course. The use case of this project is to auto tag recipes using various NLP techniques
+(mainly NER) to automatically create tags for a recipe. The recipe gets needs a title and a short description in order to get the tags.
+The system consists of a pipeline with multiple modules, where each of them adds its categorized recipe tags. The main idea is to first extract
+the possibly highest result for the recipes origin country and to call the Wikipedia API to get a more detailed description. This description is
+then used to extract different tags such as cuisine, preperation methods, dietary preferences and much more.
 
-## Modules
+## Modules in the Pipeline
 - [x] **Label Extractor**
 - [x] **Origin Extractor**
 - [x] **Label Finalizer**
